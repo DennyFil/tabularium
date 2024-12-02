@@ -38,19 +38,25 @@ class NoteExtractor:
         """
         Group notes played within a time threshold as chords.
         """
-        last_start = None
-        current_chord = Chord([])
-        chords = [current_chord]
+        if len(notes) < 1:
+            return
 
-        for note in notes:
-            if last_start is None or abs(note.start - last_start) < time_threshold:
+        first_note = notes[0]
+        chords = []
+        current_chord = self.__build_chord(chords, first_note)
+
+        for note in notes[1:]:
+            if abs(note.start - current_chord.start) < time_threshold:
                 current_chord.addNote(note.start, note.pitch)
             else:
                 # new chord
-                current_chord = Chord([])
-                current_chord.addNote(note.start, note.pitch)
-                chords.append(current_chord)
-                
-            last_start = note.start
+                current_chord = self.__build_chord(chords, note)
             
         return chords
+    
+    def __build_chord(self, chords, note):
+        chord = Chord(note.start, [])
+        chord.addNote(note.start, note.pitch)
+        chords.append(chord)
+        return chord
+

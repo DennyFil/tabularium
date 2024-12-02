@@ -2,7 +2,8 @@
 from Note import Note
 
 class Chord:
-    def __init__(self, notes):
+    def __init__(self, start, notes):
+        self.start = start
         self.notes = notes
 
     def addNote(self, start, pitch):

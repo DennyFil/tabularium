@@ -41,7 +41,7 @@ guitar_tabs_displayer = TabsDisplayer(guitar_tunings)
 bass_tunings = [28, 33, 38, 43] # E1 A1 D2 G2
 bass_tabs_displayer = TabsDisplayer(bass_tunings)
 
-file_paths = file_paths[:10] # temporary take 10 first files
+file_paths = file_paths[:1] # temporary take 1 first files
 
 for fp in file_paths:
     try:
