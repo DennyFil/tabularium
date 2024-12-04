@@ -4,7 +4,9 @@ from pathlib import Path
 from os.path import join
 import pretty_midi
 from NoteExtractor import NoteExtractor
+from NoteToTabConverter import NoteToTabConverter
 from TabsDisplayer import TabsDisplayer
+from Tuning import Tuning
 
 # Reading MIDI files from a given folder, extracting chords and bass lines, preparing and saving training data
 
@@ -36,26 +38,47 @@ bass_note_threshold = 60 # Assuming bass notes are below Middle C (C4 = 60)
 note_extractor = NoteExtractor(bass_note_threshold)
 
 # Define the guitar string tunings (standard tuning)
-guitar_tunings = [40, 45, 50, 55, 59, 64] # E2 A2 D3 G3 B3 e4 (from low E to high e)
-guitar_tabs_displayer = TabsDisplayer(guitar_tunings)
-bass_tunings = [28, 33, 38, 43] # E1 A1 D2 G2
-bass_tabs_displayer = TabsDisplayer(bass_tunings)
+guitar_tunings = [
+    Tuning(6, "E2", 40),
+    Tuning(5, "A2", 45),
+    Tuning(4, "D3", 50),
+    Tuning(3, "G3", 55),
+    Tuning(2, "B3", 59),
+    Tuning(1, "e4", 64)
+]
+
+bass_tunings = [
+    Tuning(4, "E1", 28),
+    Tuning(3, "A1", 33),
+    Tuning(2, "D2", 38),
+    Tuning(1, "G2", 43)
+]
+
+noteToTabConverter = NoteToTabConverter()
+tabs_displayer = TabsDisplayer()
 
 file_paths = file_paths[:1] # temporary take 1 first files
 
 for fp in file_paths:
     try:
+        head, fn = os.path.split(fp)
         # Load the MIDI file
+        print(f"Processing {fn}")
         midi_data = pretty_midi.PrettyMIDI(fp)
+
         # Extract chords and bass notes
         chords, bass_line = note_extractor.extract_chords_and_bass(midi_data)
 
-        guitar_tabs_displayer.display(chords) # a chord is a group of notes
-        bass_tabs_displayer.display([bass_line]) # consider bass line as group of notes
+        guitar_tabs = noteToTabConverter.notes_to_tabs(chords, guitar_tunings) # a chord is a group of notes
+        tabs_displayer.display(f"Guitar tabs of {fn}", guitar_tabs, guitar_tunings)
 
-        files_loaded.append(fp)
+        bass_tabs = noteToTabConverter.notes_to_tabs(bass_line, bass_tunings) # consider bass line as group of notes
+        tabs_displayer.display(f"Bass tabs of {fn}", bass_tabs, bass_tunings)
+
+        files_loaded.append(fn)
+        print(f"Processed {fn}")
     except Exception as e:
-        print(fp)
+        print(f"Failed to process {fp}")
         print(e)
         files_failed_to_load.append(fp)
 
