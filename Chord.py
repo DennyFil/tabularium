@@ -10,8 +10,9 @@ class Chord:
 
     def addNote(self, start, pitch):
         note = Note(start, pitch)
-        self.notes.append(note)
-        self.__set_chord_name()
+        if not any(n.start == start and n.pitch == pitch for n in self.notes):
+            self.notes.append(note)
+            self.__set_chord_name()
 
     def __iter__(self):
         # Allow iteration over the notes in the chord

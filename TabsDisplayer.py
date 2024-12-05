@@ -11,7 +11,9 @@ class TabsDisplayer:
     def display(self, title, tempo, duration, tabs, tunings):
         
         # compute number of tab rows to display
-        num_rows = math.floor(duration/self.measures_per_row/self.measure_duration) + 1
+        num_rows = duration/self.measures_per_row/self.measure_duration
+        num_rows_floor = math.floor(num_rows)
+        num_rows = int(num_rows if num_rows_floor == num_rows else num_rows_floor + 1)
 
         print(f"tempo: {tempo}, duration: {duration}")
 
@@ -26,7 +28,7 @@ class TabsDisplayer:
             print(f"row: {row}, start_time: {start_time}, end_time: {end_time}")
             
             plt.title(title)
-            plt.ylim(0.5, num_strings + 0.5)
+            plt.ylim(0.5, num_strings + 1)
             plt.yticks(range(1, num_strings + 1), tunings_y_plot)
             plt.grid(0, 1)
 
@@ -50,7 +52,10 @@ class TabsDisplayer:
             x_note_start = [x for x in x_note_start if x not in seen and not seen.add(x)]
             x_note_start_sorted = sorted(x_note_start)
             
-            plt.xticks(x_note_start_sorted, [])
+            plt.xticks(x_note_start_sorted, x_note_start_sorted)
+            plt.xlim(-0.1 + min(x_note_start_sorted), row_duration + 0.1)
 
             plt.show()
+            plt.clear_data()
+            plt.clear_figure()
         

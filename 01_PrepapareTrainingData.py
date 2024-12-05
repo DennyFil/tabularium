@@ -47,19 +47,19 @@ note_extractor = NoteExtractor(bass_note_threshold)
 
 # Define the guitar string tunings (standard tuning)
 guitar_tunings = [
-    Tuning(6, "E2", 40),
-    Tuning(5, "A2", 45),
-    Tuning(4, "D3", 50),
-    Tuning(3, "G3", 55),
-    Tuning(2, "B3", 59),
-    Tuning(1, "e4", 64)
+    Tuning(1, "E2", 40),
+    Tuning(2, "A2", 45),
+    Tuning(3, "D3", 50),
+    Tuning(4, "G3", 55),
+    Tuning(5, "B3", 59),
+    Tuning(6, "e4", 64)
 ]
 
 bass_tunings = [
-    Tuning(4, "E1", 28),
-    Tuning(3, "A1", 33),
-    Tuning(2, "D2", 38),
-    Tuning(1, "G2", 43)
+    Tuning(1, "E1", 28),
+    Tuning(2, "A1", 33),
+    Tuning(3, "D2", 38),
+    Tuning(4, "G2", 43)
 ]
 
 noteToTabConverter = NoteToTabConverter()
