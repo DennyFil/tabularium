@@ -28,9 +28,9 @@ class NoteToTabConverter:
         min_distance = float('inf')
 
         for idx, tuning in enumerate(tunings):
-            distance = abs(pitch - tuning.pitch)
+            distance = pitch - tuning.pitch
             fret = distance
-            if fret <= 12:  # We'll limit it to the first 12 frets for simplicity
+            if fret >= 0 and fret <= 12:  # We'll limit it to the first 12 frets for simplicity
                 if distance < min_distance:
                     min_distance = distance
                     closest_tuning = tuning
