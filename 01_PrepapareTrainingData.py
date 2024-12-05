@@ -10,29 +10,37 @@ from Tuning import Tuning
 
 # Reading MIDI files from a given folder, extracting chords and bass lines, preparing and saving training data
 
-missing_dataset_msg = 'Missing dataset folder path'
+missing_dataset_msg = 'Missing dataset path'
 
 if len(sys.argv) <= 1:
     print(missing_dataset_msg)
     sys.exit(0)
 
-dataset_folder = sys.argv[1]
-if not os.path.exists(dataset_folder):
-    print(f"Folder {dataset_folder} does not exist")
+dataset_path_str = sys.argv[1]
+if not os.path.exists(dataset_path_str):
+    print(f"Path {dataset_path_str} does not exist")
     sys.exit(0)
 
-has_files = os.listdir(dataset_folder)
+dataset_path = Path(dataset_path_str)
+is_file = dataset_path.is_file()
 
-if len(has_files) == 0:
-    print(f"Folder {dataset_folder} is empty")
-    sys.exit(0)
+if not is_file:
+    has_files = os.listdir(dataset_path_str)
+    if len(has_files) == 0:
+        print(f"Folder {dataset_path_str} is empty")
+        sys.exit(0)
 
-print(f"Reading dataset from {dataset_folder}")
+print(f"Reading dataset from {dataset_path_str}")
+
+if is_file:
+    file_paths = [dataset_path_str]
+else:
+    file_paths = [join(dataset_path_str, f) for f in dataset_path.rglob('*.mid')]
+
+print(f"Reading {len(file_paths)} files")
 
 files_loaded = []
 files_failed_to_load = []
-file_paths = [join(dataset_folder, f) for f in Path(dataset_folder).rglob('*.mid')]
-print(f"Reading {len(file_paths)} files")
 
 bass_note_threshold = 60 # Assuming bass notes are below Middle C (C4 = 60)
 note_extractor = NoteExtractor(bass_note_threshold)
@@ -55,7 +63,9 @@ bass_tunings = [
 ]
 
 noteToTabConverter = NoteToTabConverter()
-tabs_displayer = TabsDisplayer()
+measures_per_row = 4
+measure_duration = 2
+tabs_displayer = TabsDisplayer(measures_per_row, measure_duration)
 
 file_paths = file_paths[:1] # temporary take 1 first files
 
@@ -70,10 +80,20 @@ for fp in file_paths:
         chords, bass_line = note_extractor.extract_chords_and_bass(midi_data)
 
         guitar_tabs = noteToTabConverter.notes_to_tabs(chords, guitar_tunings) # a chord is a group of notes
-        tabs_displayer.display(f"Guitar tabs of {fn}", guitar_tabs, guitar_tunings)
 
         bass_tabs = noteToTabConverter.notes_to_tabs(bass_line, bass_tunings) # consider bass line as group of notes
-        tabs_displayer.display(f"Bass tabs of {fn}", bass_tabs, bass_tunings)
+    
+        tempo = 2  # Default tempo in seconds per beat (120 BPM)
+
+        tempo_times, tempo_bpm = midi_data.get_tempo_changes()
+        if len(tempo_bpm) > 0:
+            tempo = tempo_bpm[0]/60  # First tempo found
+
+        # Get the total duration of the MIDI file in seconds
+        duration = midi_data.get_end_time()
+
+        tabs_displayer.display(f"Guitar tabs of {fn}", tempo, duration, guitar_tabs, guitar_tunings)
+        #tabs_displayer.display(f"Bass tabs of {fn}", tempo, duration, bass_tabs, bass_tunings)
 
         files_loaded.append(fn)
         print(f"Processed {fn}")
