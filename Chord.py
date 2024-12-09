@@ -20,5 +20,5 @@ class Chord:
     
     def __set_chord_name(self):
         pitches = [n.pitch for n in self.notes]
-        self.name = chord.Chord(pitches).commonName
+        self.name = chord.Chord(pitches).pitchedCommonName
     

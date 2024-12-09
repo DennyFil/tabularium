@@ -11,24 +11,24 @@ class NoteExtractor:
     def extract_chords_and_bass(self, midi_data):
 
         # Initialize containers for chords and bass notes
-        chord_notes = []
-        bass_line = []
+        chord_notes = list()
+        bass_line = list()
 
         for instrument in midi_data.instruments:
             if instrument.is_drum:  # Skip drum tracks
                 continue
 
             # Extract notes from the instrument
-            notes = sorted(instrument.notes, key=lambda note: note.start)
+            notes = list(sorted(instrument.notes, key=lambda note: note.start))
 
-            # Separate bass notes (lowest pitch) and chord notes
+            # Separate bass notes and chord notes
             for note in notes:
-                if note.pitch < self.bass_note_threshold:
+                if instrument.name.strip() == "Bass":
                     bass_line.append(Note(note.start, note.pitch))
-                else:
+                elif instrument.name.strip() == "Chords":
                     # Chord detection can be more complex; here we just collect notes
                     chord_notes.append(Note(note.start, note.pitch))
-
+                        
         # Group notes played at the same time to form chords
         chords = self.__group_chords(chord_notes)
 
@@ -52,7 +52,7 @@ class NoteExtractor:
                 # new chord
                 current_chord = self.__build_chord(chords, note)
             
-        return chords
+        return list(filter(lambda chord: len(chord.notes) > 1, chords))
     
     def __build_chord(self, chords, note):
         chord = Chord(note.start, [])

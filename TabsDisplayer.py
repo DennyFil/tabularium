@@ -38,7 +38,7 @@ class TabsDisplayer:
 
                 tuning_tabs = list(filter(lambda tab: tab.tuning.name == tuning.name and tab.note.start >= start_time and tab.note.start < end_time, tabs))
 
-                print(f"tuning: {tuning.name}, nb notes: {len(tuning_tabs)}")
+                print(f"tuning: {tuning.name}, start: {start_time}, end: {end_time}, nb notes: {len(tuning_tabs)}")
                 for t in tuning_tabs:
                     print(f"note: {str(t.note)}, fret: {t.fret_idx}")
 
@@ -53,7 +53,7 @@ class TabsDisplayer:
             x_note_start_sorted = sorted(x_note_start)
             
             plt.xticks(x_note_start_sorted, x_note_start_sorted)
-            plt.xlim(-0.1 + min(x_note_start_sorted), row_duration + 0.1)
+            print(min(x_note_start_sorted))
 
             plt.show()
             plt.clear_data()

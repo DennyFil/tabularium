@@ -42,7 +42,7 @@ print(f"Reading {len(file_paths)} files")
 files_loaded = []
 files_failed_to_load = []
 
-bass_note_threshold = 60 # Assuming bass notes are below Middle C (C4 = 60)
+bass_note_threshold = 55 # Assuming bass notes are below Middle C (C4 = 60)
 note_extractor = NoteExtractor(bass_note_threshold)
 
 # Define the guitar string tunings (standard tuning)
@@ -79,6 +79,16 @@ for fp in file_paths:
         # Extract chords and bass notes
         chords, bass_line = note_extractor.extract_chords_and_bass(midi_data)
 
+        print("Chords")
+        for chord in chords:
+            print(f"chord: {chord.name}")
+            for n in chord.notes:
+                print(n)
+
+        print("Bass")
+        for bsn in bass_line:
+            print(bsn)
+
         guitar_tabs = noteToTabConverter.notes_to_tabs(chords, guitar_tunings) # a chord is a group of notes
 
         bass_tabs = noteToTabConverter.notes_to_tabs(bass_line, bass_tunings) # consider bass line as group of notes
@@ -93,7 +103,7 @@ for fp in file_paths:
         duration = midi_data.get_end_time()
 
         tabs_displayer.display(f"Guitar tabs of {fn}", tempo, duration, guitar_tabs, guitar_tunings)
-        #tabs_displayer.display(f"Bass tabs of {fn}", tempo, duration, bass_tabs, bass_tunings)
+        tabs_displayer.display(f"Bass tabs of {fn}", tempo, duration, bass_tabs, bass_tunings)
 
         files_loaded.append(fn)
         print(f"Processed {fn}")
