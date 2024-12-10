@@ -39,7 +39,7 @@ class NoteExtractor:
         Group notes played within a time threshold as chords.
         """
         if len(notes) < 1:
-            return
+            return []
 
         first_note = notes[0]
         chords = []

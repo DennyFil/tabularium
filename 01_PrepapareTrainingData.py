@@ -2,19 +2,25 @@ import sys
 import os
 from pathlib import Path
 from os.path import join
+from tqdm import tqdm
 import pretty_midi
 from NoteExtractor import NoteExtractor
 from NoteToTabConverter import NoteToTabConverter
 from TabsDisplayer import TabsDisplayer
+from Tokenizer import Tokenizer
 from Tuning import Tuning
 
 # Reading MIDI files from a given folder, extracting chords and bass lines, preparing and saving training data
 
-missing_dataset_msg = 'Missing dataset path'
-
 if len(sys.argv) <= 1:
-    print(missing_dataset_msg)
+    print('Please submit dataset path as first argument')
     sys.exit(0)
+
+if len(sys.argv) <= 2:
+    print('Please submit as second argument if prepared data should be overriden')
+    sys.exit(0)
+
+override_prepared_data = sys.argv[2]
 
 dataset_path_str = sys.argv[1]
 if not os.path.exists(dataset_path_str):
@@ -39,8 +45,10 @@ else:
 
 print(f"Reading {len(file_paths)} files")
 
-files_loaded = []
-files_failed_to_load = []
+nb_files_loaded = 0
+nb_files_skipped = 0
+nb_files_failed_to_load = 0
+nb_files_no_chords = 0
 
 bass_note_threshold = 55 # Assuming bass notes are below Middle C (C4 = 60)
 note_extractor = NoteExtractor(bass_note_threshold)
@@ -66,32 +74,52 @@ noteToTabConverter = NoteToTabConverter()
 measures_per_row = 4
 measure_duration = 2
 tabs_displayer = TabsDisplayer(measures_per_row, measure_duration)
+tokenizer = Tokenizer()
 
-file_paths = file_paths[:1] # temporary take 1 first files
-
-for fp in file_paths:
+pbar = tqdm(file_paths)
+for fp in pbar:
     try:
+        pbar.set_description(f"Loaded: {nb_files_loaded}, skipped: {nb_files_skipped}, without chords: {nb_files_no_chords}, failed to load: {nb_files_failed_to_load}")
+
+        fp_for_training = f"{fp}.txt"
+        # Check if tokenized training data already exists
+        if os.path.exists(fp_for_training) and not override_prepared_data == 'y' and not override_prepared_data == 'yes':
+            nb_files_skipped += 1
+            continue
+
         head, fn = os.path.split(fp)
         # Load the MIDI file
-        print(f"Processing {fn}")
         midi_data = pretty_midi.PrettyMIDI(fp)
 
         # Extract chords and bass notes
         chords, bass_line = note_extractor.extract_chords_and_bass(midi_data)
 
-        print("Chords")
-        for chord in chords:
-            print(f"chord: {chord.name}")
-            for n in chord.notes:
-                print(n)
+        if(len(chords) == 0):
+            raise ValueError("Missing chords")
 
-        print("Bass")
-        for bsn in bass_line:
-            print(bsn)
+        # print("Chords")
+        # for chord in chords:
+        #     print(f"chord: {chord.name}")
+        #     for n in chord.notes:
+        #         print(n)
 
-        guitar_tabs = noteToTabConverter.notes_to_tabs(chords, guitar_tunings) # a chord is a group of notes
+        # print("#########################")
 
-        bass_tabs = noteToTabConverter.notes_to_tabs(bass_line, bass_tunings) # consider bass line as group of notes
+        # Tokenize chords and bass notes
+        tokens = tokenizer.get_tokens(None, chords, bass_line) # TDB: add style
+
+        # Save tokens for training
+        f = open(fp_for_training, "w")
+        f.write(tokens)
+        f.close()
+
+        # print("Bass")
+        # for bsn in bass_line:
+        #     print(bsn)
+
+        #guitar_tabs = noteToTabConverter.notes_to_tabs(chords, guitar_tunings) # a chord is a group of notes
+
+        #bass_tabs = noteToTabConverter.notes_to_tabs(bass_line, bass_tunings) # consider bass line as group of notes
     
         tempo = 2  # Default tempo in seconds per beat (120 BPM)
 
@@ -102,18 +130,24 @@ for fp in file_paths:
         # Get the total duration of the MIDI file in seconds
         duration = midi_data.get_end_time()
 
-        tabs_displayer.display(f"Guitar tabs of {fn}", tempo, duration, guitar_tabs, guitar_tunings)
-        tabs_displayer.display(f"Bass tabs of {fn}", tempo, duration, bass_tabs, bass_tunings)
+        #tabs_displayer.display(f"Guitar tabs of {fn}", tempo, duration, guitar_tabs, guitar_tunings)
+        # tabs_displayer.display(f"Bass tabs of {fn}", tempo, duration, bass_tabs, bass_tunings)
 
-        files_loaded.append(fn)
-        print(f"Processed {fn}")
+        nb_files_loaded += 1
+    except ValueError as ve:
+        nb_files_no_chords += 1
+        continue
     except Exception as e:
         print(f"Failed to process {fp}")
         print(e)
-        files_failed_to_load.append(fp)
+        nb_files_failed_to_load += 1
+        continue
 
-print(f"Loaded {len(files_loaded)} files")
-print(f"Failed to load {len(files_failed_to_load)} files")
+pbar.set_description(f"Loaded: {nb_files_loaded}, skipped: {nb_files_skipped}, without chords: {nb_files_no_chords}, failed to load: {nb_files_failed_to_load}")
+print(f"Number of files loaded: {nb_files_loaded}")
+print(f"Number of files skipped as already processed: {nb_files_skipped}")
+print(f"Number of files without chords: {nb_files_no_chords}")
+print(f"Number of files failed to load: {nb_files_failed_to_load}")
 
 def isNotBlank (myString):
     return bool(myString and myString.strip())

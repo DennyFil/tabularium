@@ -15,7 +15,7 @@ class TabsDisplayer:
         num_rows_floor = math.floor(num_rows)
         num_rows = int(num_rows if num_rows_floor == num_rows else num_rows_floor + 1)
 
-        print(f"tempo: {tempo}, duration: {duration}")
+        #print(f"tempo: {tempo}, duration: {duration}")
 
         num_strings = len(tunings)
         tunings_y_plot = [t.name for t in tunings]
@@ -25,7 +25,7 @@ class TabsDisplayer:
             start_time = row*row_duration
             end_time = start_time + row_duration
 
-            print(f"row: {row}, start_time: {start_time}, end_time: {end_time}")
+            #print(f"row: {row}, start_time: {start_time}, end_time: {end_time}")
             
             plt.title(title)
             plt.ylim(0.5, num_strings + 1)
@@ -38,9 +38,9 @@ class TabsDisplayer:
 
                 tuning_tabs = list(filter(lambda tab: tab.tuning.name == tuning.name and tab.note.start >= start_time and tab.note.start < end_time, tabs))
 
-                print(f"tuning: {tuning.name}, start: {start_time}, end: {end_time}, nb notes: {len(tuning_tabs)}")
-                for t in tuning_tabs:
-                    print(f"note: {str(t.note)}, fret: {t.fret_idx}")
+                # print(f"tuning: {tuning.name}, start: {start_time}, end: {end_time}, nb notes: {len(tuning_tabs)}")
+                # for t in tuning_tabs:
+                #     print(f"note: {str(t.note)}, fret: {t.fret_idx}")
 
                 if (len(tuning_tabs) > 0):
                     x_note_start.extend([t.note.start for t in tuning_tabs])
@@ -53,7 +53,7 @@ class TabsDisplayer:
             x_note_start_sorted = sorted(x_note_start)
             
             plt.xticks(x_note_start_sorted, x_note_start_sorted)
-            print(min(x_note_start_sorted))
+            #print(min(x_note_start_sorted))
 
             plt.show()
             plt.clear_data()
