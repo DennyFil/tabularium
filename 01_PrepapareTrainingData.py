@@ -50,8 +50,7 @@ nb_files_skipped = 0
 nb_files_failed_to_load = 0
 nb_files_no_chords = 0
 
-bass_note_threshold = 55 # Assuming bass notes are below Middle C (C4 = 60)
-note_extractor = NoteExtractor(bass_note_threshold)
+note_extractor = NoteExtractor()
 
 # Define the guitar string tunings (standard tuning)
 guitar_tunings = [

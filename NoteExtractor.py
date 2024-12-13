@@ -2,11 +2,9 @@
 # Dependencies: pretty_midi
 from Chord import Chord
 from Note import Note
+from Constants import bass_instrument_name
 
 class NoteExtractor:
-
-    def __init__(self, input_bass_note_threshold):
-        self.bass_note_threshold = input_bass_note_threshold
 
     def extract_chords_and_bass(self, midi_data):
 
@@ -23,7 +21,7 @@ class NoteExtractor:
 
             # Separate bass notes and chord notes
             for note in notes:
-                if instrument.name.strip() == "Bass":
+                if instrument.name.strip() == bass_instrument_name:
                     bass_line.append(Note(note.start, note.pitch))
                 elif instrument.name.strip() == "Chords":
                     # Chord detection can be more complex; here we just collect notes
