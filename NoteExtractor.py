@@ -2,7 +2,7 @@
 # Dependencies: pretty_midi
 from Chord import Chord
 from Note import Note
-from Constants import bass_instrument_name
+from Tools import is_bass
 
 class NoteExtractor:
 
@@ -17,16 +17,15 @@ class NoteExtractor:
                 continue
 
             # Extract notes from the instrument
-            notes = list(sorted(instrument.notes, key=lambda note: note.start))
+            notes = list(sorted([Note(note.start, note.pitch) for note in instrument.notes], key=lambda note: note.start))
 
             # Separate bass notes and chord notes
-            for note in notes:
-                if instrument.name.strip() == bass_instrument_name:
-                    bass_line.append(Note(note.start, note.pitch))
-                elif instrument.name.strip() == "Chords":
-                    # Chord detection can be more complex; here we just collect notes
-                    chord_notes.append(Note(note.start, note.pitch))
-                        
+            if is_bass(instrument):
+                bass_line.extend(notes)
+            elif instrument.name.strip() == "Chords":
+                # Chord detection can be more complex; here we just collect notes
+                chord_notes.extend(notes)
+                
         # Group notes played at the same time to form chords
         chords = self.__group_chords(chord_notes)
 

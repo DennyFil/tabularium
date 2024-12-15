@@ -3,7 +3,7 @@ import os
 import time
 import pretty_midi
 import pygame
-from Tools import get_bass_from_midi
+from Tools import is_bass, get_bass_notes_from_midi
 from BassLineGenerator import BassLineGenerator
 
 class BassLineTester:
@@ -19,8 +19,10 @@ class BassLineTester:
             print(f"playing input")
             self.__play_file(input_file_path)
             time.sleep(self.interval)
+
+        print(f"bass notes nb before generation: {len(get_bass_notes_from_midi(midi_data))}")
         
-        midi_data_without_bass = self.__remove_bass_line(midi_data)
+        midi_data_without_bass = self.__remove_bass(midi_data)
 
         output_file_name_prefix, file_extension = os.path.splitext(input_file_path)
         
@@ -45,17 +47,14 @@ class BassLineTester:
             print(f"playing input with generated bass")
             self.__play_file(file_bass_added_path)
 
-    def __remove_bass_line(self, midi_data):
+    def __remove_bass(self, midi_data):
         
         copied_midi = copy.deepcopy(midi_data)
 
-        bass = get_bass_from_midi(copied_midi)
-        if bass:
-            print(f"bass notes nb before: {len(bass.notes)}")
-            bass.notes = []
-            print(f"bass notes nb after: {len(bass.notes)}")
-        else:
-            print(f"no bass notes available")
+        copied_midi.instruments = [
+            instrument for instrument in copied_midi.instruments
+            if not is_bass(instrument)
+        ]
             
         return copied_midi
     
@@ -63,17 +62,18 @@ class BassLineTester:
         
         copied_midi = copy.deepcopy(midi_data)
 
-        bass = get_bass_from_midi(copied_midi)
-        if not bass:
+        print(len(notes))
+        if len(notes) > 0:
+            # at this point MIDI should not have any bass
+            # adding same bass type for all given notes no matter their original bass type
             bass_program = pretty_midi.instrument_name_to_program('Electric Bass (Finger)')
             bass = pretty_midi.Instrument(program=bass_program)
 
-            midi_data.instruments.append(bass)
+            bass.notes = notes
+            print(f"bass notes nb after generation: {len(bass.notes)}")
 
-        print(f"bass notes nb before: 0")
-        bass.notes = notes
-        print(f"bass notes nb after: {len(bass.notes)}")
-
+            copied_midi.instruments.append(bass)
+            
         return copied_midi
         
     def __play_file(self, file_path):

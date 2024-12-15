@@ -15,7 +15,8 @@ if len(sys.argv) <= 3:
 
 file_path_str = sys.argv[1]
 play_music = sys.argv[2]
-interval = int(sys.argv[3])
+interval = sys.argv[3]
+interval = int(interval) if interval.isdecimal() else 3
 
 play_music = play_music == 'y' or play_music == 'yes'
 
