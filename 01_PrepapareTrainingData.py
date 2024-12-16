@@ -47,10 +47,15 @@ else:
 print(f"Reading {len(file_paths)} files")
 
 nb_files_loaded = 0
+f_loaded = open(f"{dataset_path_str}_loaded.txt", "w")
 nb_files_skipped = 0
+f_skipped = open(f"{dataset_path_str}_skipped.txt", "w")
 nb_files_failed_to_load = 0
+f_failed_to_load = open(f"{dataset_path_str}_failed_to_load.txt", "w")
 nb_files_no_chords = 0
+f_no_chords = open(f"{dataset_path_str}_no_chords.txt", "w")
 nb_files_no_bass = 0
+f_no_bass = open(f"{dataset_path_str}_no_bass.txt", "w")
 
 note_extractor = NoteExtractor()
 
@@ -86,6 +91,7 @@ for fp in pbar:
         # Check if tokenized training data already exists
         if os.path.exists(fp_for_training) and not override_prepared_data == 'y' and not override_prepared_data == 'yes':
             nb_files_skipped += 1
+            f_skipped.write(fp+'\n')
             continue
 
         head, fn = os.path.split(fp)
@@ -127,32 +133,43 @@ for fp in pbar:
 
         #bass_tabs = noteToTabConverter.notes_to_tabs(bass_line, bass_tunings) # consider bass line as group of notes
     
-        tempo = 2  # Default tempo in seconds per beat (120 BPM)
+        # tempo = 2  # Default tempo in seconds per beat (120 BPM)
 
-        tempo_times, tempo_bpm = midi_data.get_tempo_changes()
-        if len(tempo_bpm) > 0:
-            tempo = tempo_bpm[0]/60  # First tempo found
+        # tempo_times, tempo_bpm = midi_data.get_tempo_changes()
+        # if len(tempo_bpm) > 0:
+        #     tempo = tempo_bpm[0]/60  # First tempo found
 
-        # Get the total duration of the MIDI file in seconds
-        duration = midi_data.get_end_time()
+        # # Get the total duration of the MIDI file in seconds
+        # duration = midi_data.get_end_time()
 
         #tabs_displayer.display(f"Guitar tabs of {fn}", tempo, duration, guitar_tabs, guitar_tunings)
         # tabs_displayer.display(f"Bass tabs of {fn}", tempo, duration, bass_tabs, bass_tunings)
 
         nb_files_loaded += 1
+        f_loaded.write(fp+'\n')
     except ChordException as ve:
         nb_files_no_chords += 1
+        f_no_chords.write(fp+'\n')
         continue
     except BassException as ve:
         nb_files_no_bass += 1
+        f_no_bass.write(fp+'\n')
         continue
     except Exception as e:
         print(f"Failed to process {fp}")
         print(e)
         nb_files_failed_to_load += 1
+        f_failed_to_load.write(fp+'\n')
         continue
 
 pbar.set_description(f"Loaded: {nb_files_loaded}, skipped: {nb_files_skipped}, without chords: {nb_files_no_chords}, failed to load: {nb_files_failed_to_load}")
+
+f_loaded.close()
+f_skipped.close()
+f_failed_to_load.close()
+f_no_chords.close()
+f_no_bass.close()
+
 print(f"Number of files loaded: {nb_files_loaded}")
 print(f"Number of files skipped as already processed: {nb_files_skipped}")
 print(f"Number of files without chords: {nb_files_no_chords}")
