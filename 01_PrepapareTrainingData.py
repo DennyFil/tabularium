@@ -9,6 +9,7 @@ from NoteToTabConverter import NoteToTabConverter
 from TabsDisplayer import TabsDisplayer
 from Tokenizer import Tokenizer
 from Tuning import Tuning
+from Exceptions import ChordException, BassException
 
 # Reading MIDI files from a given folder, extracting chords and bass lines, preparing and saving training data
 
@@ -49,6 +50,7 @@ nb_files_loaded = 0
 nb_files_skipped = 0
 nb_files_failed_to_load = 0
 nb_files_no_chords = 0
+nb_files_no_bass = 0
 
 note_extractor = NoteExtractor()
 
@@ -78,7 +80,7 @@ tokenizer = Tokenizer()
 pbar = tqdm(file_paths)
 for fp in pbar:
     try:
-        pbar.set_description(f"Loaded: {nb_files_loaded}, skipped: {nb_files_skipped}, without chords: {nb_files_no_chords}, failed to load: {nb_files_failed_to_load}")
+        pbar.set_description(f"Loaded: {nb_files_loaded}, skipped: {nb_files_skipped}, without chords: {nb_files_no_chords}, without bass: {nb_files_no_bass}, failed to load: {nb_files_failed_to_load}")
 
         fp_for_training = f"{fp}.txt"
         # Check if tokenized training data already exists
@@ -94,7 +96,12 @@ for fp in pbar:
         chords, bass_line = note_extractor.extract_chords_and_bass(midi_data)
 
         if(len(chords) == 0):
-            raise ValueError("Missing chords")
+            raise ChordException("Missing chords")
+        
+        if(len(bass_line) == 0):
+            raise BassException("Missing bass")
+        
+        print(fp_for_training)
 
         # print("Chords")
         # for chord in chords:
@@ -133,8 +140,11 @@ for fp in pbar:
         # tabs_displayer.display(f"Bass tabs of {fn}", tempo, duration, bass_tabs, bass_tunings)
 
         nb_files_loaded += 1
-    except ValueError as ve:
+    except ChordException as ve:
         nb_files_no_chords += 1
+        continue
+    except BassException as ve:
+        nb_files_no_bass += 1
         continue
     except Exception as e:
         print(f"Failed to process {fp}")
@@ -146,6 +156,7 @@ pbar.set_description(f"Loaded: {nb_files_loaded}, skipped: {nb_files_skipped}, w
 print(f"Number of files loaded: {nb_files_loaded}")
 print(f"Number of files skipped as already processed: {nb_files_skipped}")
 print(f"Number of files without chords: {nb_files_no_chords}")
+print(f"Number of files without bass: {nb_files_no_bass}")
 print(f"Number of files failed to load: {nb_files_failed_to_load}")
 
 def isNotBlank (myString):
