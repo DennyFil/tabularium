@@ -20,5 +20,13 @@ class Chord:
     
     def __set_chord_name(self):
         pitches = [n.pitch for n in self.notes]
-        self.name = chord.Chord(pitches).pitchedCommonName
-    
+        
+        ch = chord.Chord(pitches)
+
+        try:
+            root = ch.root()
+            quality = ch.quality  # Get the chord quality (e.g., major, minor)
+            self.name = f"{root.name}{'m' if quality == 'minor' else ''}"
+        except Exception as e:
+            self.name = ch.pitchedCommonName  # Fall back to a generic name if simplification fails
+        

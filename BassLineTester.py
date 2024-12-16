@@ -62,7 +62,6 @@ class BassLineTester:
         
         copied_midi = copy.deepcopy(midi_data)
 
-        print(len(notes))
         if len(notes) > 0:
             # at this point MIDI should not have any bass
             # adding same bass type for all given notes no matter their original bass type
