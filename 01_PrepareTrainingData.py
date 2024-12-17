@@ -106,8 +106,6 @@ for fp in pbar:
         
         if(len(bass_line) == 0):
             raise BassException("Missing bass")
-        
-        print(fp_for_training)
 
         # print("Chords")
         # for chord in chords:
