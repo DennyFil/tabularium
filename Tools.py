@@ -1,4 +1,4 @@
-from Constants import base_midi_program_ids
+from Constants import bass_midi_program_ids, guitar_midi_program_ids
 
 def get_bass_notes_from_midi(midi_data):
     
@@ -11,4 +11,7 @@ def get_bass_notes_from_midi(midi_data):
     return notes
 
 def is_bass(instrument):
-    return any(p == instrument.program for p in base_midi_program_ids)
+    return any(p == instrument.program for p in bass_midi_program_ids)
+
+def is_guitar(instrument):
+    return any(p == instrument.program for p in guitar_midi_program_ids)

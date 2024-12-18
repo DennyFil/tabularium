@@ -1,5 +1,4 @@
 # Class used to manage a MIDI chord which is a list of all notes
-from Note import Note
 from music21 import chord
 
 class Chord:
@@ -8,9 +7,8 @@ class Chord:
         self.notes = notes
         self.__set_chord_name()
 
-    def addNote(self, start, pitch):
-        note = Note(start, pitch)
-        if not any(n.start == start and n.pitch == pitch for n in self.notes):
+    def addNote(self, note):
+        if not any(n.start == note.start and n.pitch == note.pitch for n in self.notes):
             self.notes.append(note)
             self.__set_chord_name()
 
@@ -29,4 +27,10 @@ class Chord:
             self.name = f"{root.name}{'m' if quality == 'minor' else ''}"
         except Exception as e:
             self.name = ch.pitchedCommonName  # Fall back to a generic name if simplification fails
+
+    def __eq__(self, other):
+        return self.name==other.name and self.start==other.start
+    
+    def __hash__(self):
+        return hash((self.name, self.start))
         
