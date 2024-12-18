@@ -11,7 +11,6 @@ class NoteExtractor:
         # Initialize containers for chords and bass notes
         chord_notes = []
         bass_line = []
-        chords = []
 
         for instrument in midi_data.instruments:
             if instrument.is_drum:  # Skip drum tracks
@@ -28,11 +27,10 @@ class NoteExtractor:
                 chord_notes.extend(notes)
                 
         # Group notes played at the same time to form chords
-        grouped_chords = self.__group_chords(chord_notes)
-        chords.extend(grouped_chords)
+        chords = self.__group_chords(chord_notes)
 
         # Remove duplicate chords
-        unique_chords = sorted(set(grouped_chords), key=lambda c: c.start)
+        unique_chords = sorted(set(chords), key=lambda c: c.start)
         
         return unique_chords, bass_line
         
@@ -56,10 +54,6 @@ class NoteExtractor:
                 chords.append(current_chord)
             
         return list(filter(lambda chord: len(chord.notes) > 2, chords)) # only consider chords having 3 notes
-    
-    def __build_chord_with_notes(self, notes):
-        chord = Chord(notes[0].start, notes)
-        return chord
     
     def __build_chord(self, note):
         chord = Chord(note.start, [note])

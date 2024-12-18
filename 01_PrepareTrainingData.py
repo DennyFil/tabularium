@@ -109,7 +109,7 @@ for fp in pbar:
 
         # print("Chords")
         # for chord in chords:
-        #     print(f"chord: {chord.name}")
+        #     print(f"chord: {chord.get_name()}")
         #     for n in chord.notes:
         #         print(n)
 

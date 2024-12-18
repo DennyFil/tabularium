@@ -16,7 +16,7 @@ class Tokenizer:
 
         tokens += "CHORD:["
         for chord in chords:
-            tokens += self.__build_note_token(chord.name, chord.start) + ","
+            tokens += self.__build_note_token(chord.get_name(), chord.start) + ","
         tokens = tokens[:-1] + "],"
 
         tokens += "BASS:["
