@@ -13,4 +13,10 @@ class Note:
 
     def __str__(self):
         return f"name: {self.name}, start: {self.start}, pitch: {self.pitch}"
+
+    def __eq__(self, other):
+        return self.pitch==other.pitch and self.start==other.start
+    
+    def __hash__(self):
+        return hash((self.pitch, self.start))
     

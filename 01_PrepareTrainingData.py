@@ -101,15 +101,9 @@ for fp in pbar:
         # Extract chords and bass notes
         chords, bass_line = note_extractor.extract_chords_and_bass(midi_data)
 
-        if(len(chords) == 0):
-            raise ChordException("Missing chords")
-        
-        if(len(bass_line) == 0):
-            raise BassException("Missing bass")
-
         # print("Chords")
         # for chord in chords:
-        #     print(f"chord: {chord.get_name()}")
+        #     print(f"chord: {chord.name}")
         #     for n in chord.notes:
         #         print(n)
 

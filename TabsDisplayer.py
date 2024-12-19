@@ -48,9 +48,7 @@ class TabsDisplayer:
                     for idx_tab, tab in enumerate(tuning_tabs):
                         plt.scatter([tab.note.start], [tuning.idx], marker=str(tab.fret_idx), color="blue")
                     
-            seen = set()
-            x_note_start = [x for x in x_note_start if x not in seen and not seen.add(x)]
-            x_note_start_sorted = sorted(x_note_start)
+            x_note_start_sorted = sorted(set(x_note_start))
             
             plt.xticks(x_note_start_sorted, x_note_start_sorted)
             #print(min(x_note_start_sorted))

@@ -15,13 +15,11 @@ class Tokenizer:
             tokens += f"STYLE:'{style}',"
 
         tokens += "CHORD:["
-        for chord in chords:
-            tokens += self.__build_note_token(chord.get_name(), chord.start) + ","
+        tokens += ", ".join([self.__build_note_token(chord.name, chord.start) for chord in chords])
         tokens = tokens[:-1] + "],"
 
         tokens += "BASS:["
-        for note in bass_notes:
-            tokens += self.__build_note_token(note.name, note.start) + ","
+        tokens += ", ".join([self.__build_note_token(note.name, note.start) for note in bass_notes])
         tokens = tokens[:-1] + "]"
 
         return tokens + "}"

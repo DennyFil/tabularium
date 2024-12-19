@@ -15,10 +15,7 @@ class NoteToTabConverter:
             
             for child_note in sorted(notes, key=lambda note: note.start):
                 # Find the closest string and fret for each note
-                print(child_note)
                 tuning, fret = self.__closest_guitar_fret(child_note.pitch, input_tunings)
-                print(tuning)
-                print(fret)
                 if tuning:
                     tabs.append(Tab(tuning, fret, Note(notes.start or child_note.start, child_note.pitch)))
 
