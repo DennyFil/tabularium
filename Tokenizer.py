@@ -12,18 +12,18 @@ class Tokenizer:
 
         tokens = "{"
         if style:
-            tokens += f"STYLE:'{style}',"
+            tokens += f"\"STYLE:\"{style}\","
 
-        tokens += "CHORD:["
-        tokens += ", ".join([self.__build_note_token(chord.name, chord.start) for chord in chords])
-        tokens = tokens[:-1] + "],"
+        tokens += "\"CHORD\":["
+        tokens += ",".join([self.__build_note_token(chord.name, chord.start) for chord in chords])
+        tokens += "],"
 
-        tokens += "BASS:["
-        tokens += ", ".join([self.__build_note_token(note.name, note.start) for note in bass_notes])
-        tokens = tokens[:-1] + "]"
+        tokens += "\"BASS\":["
+        tokens += ",".join([self.__build_note_token(note.name, note.start) for note in bass_notes])
+        tokens += "]"
 
         return tokens + "}"
     
     def __build_note_token(self, name, start):
-        return "{name:" + f"'{name}',start:'{start}'" + "}"
+        return "{\"name\":" + f"\"{name}\",\"start\":\"{start}\"" + "}"
     
