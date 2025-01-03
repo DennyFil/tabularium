@@ -17,6 +17,10 @@ Prerequisites to install
     pip install setuptools
       No module named 'pkg_resources'
     pip install numpy
+    pip install transformers
+    pip3 install torch torchvision torchaudio
+      ERROR: Could not find a version that satisfies the requirement torch (from versions: none)
+      ERROR: No matching distribution found for torch
 
 Using the following MIDI datasets (downloaded to ./datasets)
   https://colinraffel.com/projects/lmd/
