@@ -1,9 +1,9 @@
 # tabularium
 Generate quality bass tabs of given music style based on song chords
 
-Install python
+Install python version 3.12.8 (compatible with pytorch)
   https://www.python.org/downloads/
-
+  
 You need to add the path of your pip installation to your PATH system variable
 
 Prerequisites to install
@@ -18,7 +18,7 @@ Prerequisites to install
       No module named 'pkg_resources'
     pip install numpy
     pip install transformers
-    pip3 install torch torchvision torchaudio
+    pip install torch torchvision torchaudio
       ERROR: Could not find a version that satisfies the requirement torch (from versions: none)
       ERROR: No matching distribution found for torch
 
@@ -42,6 +42,9 @@ Using the following MIDI datasets (downloaded to ./datasets)
   Ex for all datasets: '''python .\01_PrepareTrainingData.py "E:\datasets\" y'''
 
   Tokenized data is saved by MIDI file into a .txt file named as follows f"{initial_midi_filename_no_extension.mid}.txt"
+
+Tokenized data files (*.mid.txt) moved from source folder to the project folder in order to control versions in GitHub
+  .\Copy_Prepared_Data.ps1 -sourceDir "E:\datasets" -targetDir "E:\tabularium\datasets"
 
 02_TrainingModel.py
   Training a model (to choose) to create base lines in requested music style given input chords
