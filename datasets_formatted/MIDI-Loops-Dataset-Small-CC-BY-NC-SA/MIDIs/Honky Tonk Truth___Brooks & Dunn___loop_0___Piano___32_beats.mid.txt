@@ -1,0 +1,1 @@
+{"CHORD":[{"name":"C#","start":"9.719791666666666"},{"name":"C#","start":"13.729166666666666"}],"BASS":[{"name":"C#","start":"14.0"},{"name":"C#","start":"14.25"},{"name":"D","start":"14.5"},{"name":"D","start":"14.75"},{"name":"E-","start":"15.0"},{"name":"E-","start":"15.25"},{"name":"E","start":"15.5"},{"name":"E","start":"15.75"}]}

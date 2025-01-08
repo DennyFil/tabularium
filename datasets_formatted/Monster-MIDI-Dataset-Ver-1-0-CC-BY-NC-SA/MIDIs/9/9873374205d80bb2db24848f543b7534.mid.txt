@@ -1,0 +1,1 @@
+{"CHORD":[{"name":"Gm","start":"38.395833333333336"},{"name":"C","start":"40.0"}],"BASS":[{"name":"C","start":"36.0"},{"name":"F","start":"36.8"},{"name":"G","start":"38.4"},{"name":"G","start":"39.6"},{"name":"C","start":"40.0"},{"name":"G","start":"41.4"},{"name":"C","start":"41.6"},{"name":"C","start":"42.6"},{"name":"E","start":"42.8"},{"name":"F","start":"43.2"}]}

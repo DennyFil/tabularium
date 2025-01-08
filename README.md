@@ -19,8 +19,7 @@ Prerequisites to install
     pip install numpy
     pip install transformers
     pip install torch torchvision torchaudio
-      ERROR: Could not find a version that satisfies the requirement torch (from versions: none)
-      ERROR: No matching distribution found for torch
+    pip install transformers[torch]
 
 Using the following MIDI datasets (downloaded to ./datasets)
   https://colinraffel.com/projects/lmd/
@@ -44,7 +43,7 @@ Using the following MIDI datasets (downloaded to ./datasets)
   Tokenized data is saved by MIDI file into a .txt file named as follows f"{initial_midi_filename_no_extension.mid}.txt"
 
 Tokenized data files (*.mid.txt) moved from source folder to the project folder in order to control versions in GitHub
-  .\Copy_Prepared_Data.ps1 -sourceDir "E:\datasets" -targetDir "E:\tabularium\datasets"
+  .\Copy_Prepared_Data.ps1 -sourceDir "E:\datasets" -targetDir "E:\tabularium\datasets_formatted"
 
 02_TrainingModel.py
   Training a model (to choose) to create base lines in requested music style given input chords
