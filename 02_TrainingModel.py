@@ -11,7 +11,16 @@ if len(sys.argv) <= 1:
     print('Please submit path to prepared data as first argument')
     sys.exit(0)
 
+if len(sys.argv) <= 2:
+    print('Please submit directory name for checkpoint and model saving as second argument')
+    sys.exit(0)
+
 training_data_path_str = sys.argv[1]
+model_save_dir_name = f"./{sys.argv[2]}"
+
+model_to_restore = ""
+if len(sys.argv) > 3:
+    model_to_restore = sys.argv[3]
 
 if not os.path.exists(training_data_path_str):
     print(f"Path {training_data_path_str} does not exist")
@@ -51,7 +60,7 @@ def read_data(file_paths):
     return data
 
 # Parsing tokenized data and preparing model inputs
-print(f"Training on {len(file_paths_training)} files")
+print(f"Reading training data files")
 training_data = read_data(file_paths_training)
 
 # Instantiate and configure model
@@ -62,16 +71,16 @@ model = GPT2LMHeadModel.from_pretrained(model_name)
 
 training_inputs = ChordBassDataset(training_data, tokenizer)
 
+print(f"Training on {len(file_paths_training)} files")
+
 # Traing model
 logging_dir="./logs"
 training_args = TrainingArguments(
-    output_dir="./gpt_fine_tuned",
+    output_dir=model_save_dir_name,
     num_train_epochs=3,
     per_device_train_batch_size=4,
-    save_steps=10_000, # 10
-    save_total_limit=2,
     logging_dir=logging_dir,
-#     logging_steps=10,
+    logging_steps=10,
 #     learning_rate=5e-5,
 #     weight_decay=0.01,
 #     evaluation_strategy="steps",
@@ -87,6 +96,8 @@ trainer = Trainer(
 )
 
 trainer.train()
+
+trainer.save_model(model_save_dir_name)
 
 # Validating
 print(f"Validating on {len(file_paths_validation)} files")

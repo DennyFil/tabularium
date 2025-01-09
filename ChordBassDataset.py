@@ -1,5 +1,6 @@
 import json
 import torch
+from tqdm import tqdm
 from torch.utils.data import Dataset
 
 class ChordBassDataset(Dataset):
@@ -8,7 +9,12 @@ class ChordBassDataset(Dataset):
         self.targets = []
         self.tokenizer = tokenizer
 
-        for item in data:
+        print("Preparing chord-bass dataset")
+
+        count = 1
+        total = len(data)
+        pbar = tqdm(data)
+        for item in pbar:
             
             # Parse the JSON string
             parsed_data = json.loads(item)
@@ -25,6 +31,8 @@ class ChordBassDataset(Dataset):
 
             self.inputs.append(input_encoded)
             self.targets.append(target_encoded)
+
+            pbar.set_description(f"Prepared: {count}/{total}")
 
     def __len__(self):
         return len(self.inputs)
