@@ -12,7 +12,7 @@ class BassLineTester:
         self.play_music = play_music
         self.interval = interval
 
-    def test_line(self, input_file_path):
+    def test_line(self, model, tokenizer, input_file_path):
         midi_data = pretty_midi.PrettyMIDI(input_file_path)
         
         if self.play_music:
@@ -35,7 +35,7 @@ class BassLineTester:
             self.__play_file(file_no_bass_path)
             time.sleep(self.interval)
 
-        generated_bass_line_notes = BassLineGenerator().generate(midi_data)
+        generated_bass_line_notes = BassLineGenerator().generate(model, tokenizer, midi_data)
         
         # add the generated line to file and play
         midi_data_bass_added = self.__add_bass_line(midi_data_without_bass, generated_bass_line_notes)

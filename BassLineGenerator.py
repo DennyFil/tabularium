@@ -1,8 +1,8 @@
-from Tools import get_bass_notes_from_midi
-
 class BassLineGenerator:
 
     ## TDB: generate bass line with the model, temporary adding back the same notes
-    def generate(self, midi_data):
+    def generate(self, model, tokenizer, chord_sequence):
         
-        return get_bass_notes_from_midi(midi_data)
+        inputs = tokenizer(chord_sequence, return_tensors="pt", max_length=128, truncation=True, padding="max_length")
+        outputs = model.generate(inputs["input_ids"], max_length=128, num_beams=5, early_stopping=True)
+        return tokenizer.decode(outputs[0], skip_special_tokens=True)

@@ -32,7 +32,7 @@ training_data_path = Path(training_data_path_str)
 file_names = training_data_path.rglob('*.mid.txt')
 file_paths = [join(training_data_path_str, f) for f in file_names]
 
-file_paths = file_paths[:1000]
+file_paths = file_paths[:100]
 
 nb_available_files = len(file_paths)
 print(f"Reading {nb_available_files} files")
@@ -62,6 +62,10 @@ def read_data(file_paths):
 # Parsing tokenized data and preparing model inputs
 print(f"Reading training data files")
 training_data = read_data(file_paths_training)
+f_used_training = open(f"{model_save_dir_name}/files_used_training.txt", "w")
+for fp in file_paths_training:
+    f_used_training.write(fp+'\n')
+f_used_training.close()
 
 # Instantiate and configure model
 model_name = "gpt2"  # Replace with a GPT-4 equivalent if accessible
@@ -102,6 +106,10 @@ trainer.save_model(model_save_dir_name)
 # Validating
 print(f"Validating on {len(file_paths_validation)} files")
 validation_data = read_data(file_paths_validation)
+f_used_validation = open(f"{model_save_dir_name}/files_used_validation.txt", "w")
+for fp in file_paths_validation:
+    f_used_validation.write(fp+'\n')
+f_used_validation.close()
 
 validation_inputs = ChordBassDataset(validation_data, tokenizer)
 

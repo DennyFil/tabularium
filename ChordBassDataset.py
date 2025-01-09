@@ -32,8 +32,6 @@ class ChordBassDataset(Dataset):
             self.inputs.append(input_encoded)
             self.targets.append(target_encoded)
 
-            pbar.set_description(f"Prepared: {count}/{total}")
-
     def __len__(self):
         return len(self.inputs)
 
