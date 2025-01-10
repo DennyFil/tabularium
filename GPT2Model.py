@@ -69,5 +69,5 @@ class GPT2Model(ModelBase):
 
     def generate_output(self, inputs):
         tokenized_inputs = self.tokenizer(inputs, return_tensors="pt", max_length=self.tokenized_max_length, truncation=True, padding="max_length")
-        outputs = self.model.generate(tokenized_inputs["input_ids"], max_length=self.tokenized_max_length, num_beams=5, early_stopping=True)
+        outputs = self.model.generate(tokenized_inputs["input_ids"], num_beams=5, early_stopping=True)
         return self.tokenizer.decode(outputs[0], skip_special_tokens=True)

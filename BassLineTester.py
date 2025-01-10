@@ -1,8 +1,11 @@
 import copy
 import os
+import json
 import time
 import pretty_midi
 import pygame
+from NoteExtractor import NoteExtractor
+from Tokenizer import Tokenizer
 from Tools import is_bass, get_bass_notes_from_midi
 
 class BassLineTester:
@@ -20,6 +23,9 @@ class BassLineTester:
             time.sleep(self.interval)
 
         print(f"bass notes nb before generation: {len(get_bass_notes_from_midi(midi_data))}")
+
+        note_extractor = NoteExtractor()
+        chords, original_bass_line = note_extractor.extract_chords_and_bass(midi_data)
         
         midi_data_without_bass = self.__remove_bass(midi_data)
 
@@ -34,7 +40,15 @@ class BassLineTester:
             self.__play_file(file_no_bass_path)
             time.sleep(self.interval)
 
-        generated_bass_line_notes = model.generate_output(midi_data)
+        tokenizer = Tokenizer()
+        tokens = tokenizer.get_tokens(None, chords, original_bass_line)
+        parsed_data = json.loads(tokens)
+        chord_sequence = json.dumps(parsed_data["CHORD"])
+
+        generated_bass_line_notes = model.generate_output(chord_sequence)
+
+        print("Generated bass line")
+        print(generated_bass_line_notes)
         
         # add the generated line to file and play
         midi_data_bass_added = self.__add_bass_line(midi_data_without_bass, generated_bass_line_notes)

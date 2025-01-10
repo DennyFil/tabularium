@@ -62,7 +62,7 @@ Prepared data files (*.mid.txt) moved from source folder to the project folder i
   
     call test_line function passing the path to MIDI file
 
-  Ex: python .\03_ModelTester.py "E:\tabularium\models_10" "E:\tabularium\datasets_formatted\MIDI-Loops-Dataset-Small-CC-BY-NC-SA\MIDIs\(Dont Fear) The Reaper___Blue Oyster Cult___loop_3___Piano___32_beats.mid" y 3
+  Ex: python .\03_ModelTester.py "E:\tabularium\models_10" "E:\datasets\MIDI-Loops-Dataset-Small-CC-BY-NC-SA\MIDIs\(Dont Fear) The Reaper___Blue Oyster Cult___loop_3___Piano___32_beats.mid" y 3
 
   TDB: adapt to receive a mp3, convert to MIDI
 
