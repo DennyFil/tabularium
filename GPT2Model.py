@@ -6,7 +6,7 @@ from TorchChordBassDataset import TorchChordBassDataset
 class GPT2Model(ModelBase):
     def __init__(self, model_save_dir_path, model_restore_dir_path):
         self.model_name = "gpt2"  # Replace with a GPT-4 equivalent if accessible
-        
+
         super().__init__(model_save_dir_path, model_restore_dir_path)
         self.tokenized_max_length = 128
 
@@ -26,7 +26,13 @@ class GPT2Model(ModelBase):
         self.tokenizer.pad_token = self.tokenizer.eos_token
 
     def load_model(self):
-        raise Exception("load_model not implemented")
+        # Load the pre-trained model
+        self.model = GPT2LMHeadModel.from_pretrained(self.model_restore_dir_path)
+        print(f"Model loaded from {self.model_restore_dir_path}")
+        
+        # Load the tokenizer
+        self.tokenizer = GPT2Tokenizer.from_pretrained(self.model_restore_dir_path)
+        self.tokenizer.pad_token = self.tokenizer.eos_token
 
     def build_model(self):
         # Instantiate and configure model
