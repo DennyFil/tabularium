@@ -4,27 +4,41 @@ import math
 from pathlib import Path
 from os.path import join
 from tqdm import tqdm
-from transformers import GPT2LMHeadModel, GPT2Tokenizer, Trainer, TrainingArguments
-from ChordBassDataset import ChordBassDataset
+from GPT2Model import GPT2Model
 
 if len(sys.argv) <= 1:
-    print('Please submit path to prepared data as first argument')
+    print('Please submit path to prepared data directory as first argument')
     sys.exit(0)
 
 if len(sys.argv) <= 2:
-    print('Please submit directory name for checkpoint and model saving as second argument')
+    print('Please submit path for checkpoint and model saving directory as second argument')
     sys.exit(0)
 
 training_data_path_str = sys.argv[1]
-model_save_dir_name = f"./{sys.argv[2]}"
-
-model_to_restore = ""
-if len(sys.argv) > 3:
-    model_to_restore = sys.argv[3]
 
 if not os.path.exists(training_data_path_str):
-    print(f"Path {training_data_path_str} does not exist")
+    print(f"Training data path {training_data_path_str} does not exist")
     sys.exit(0)
+
+model_save_dir_path = sys.argv[2]
+
+if not os.path.exists(model_save_dir_path):
+    print(f"Model saving path {model_save_dir_path} does not exist")
+    sys.exit(0)
+
+if len(sys.argv) > 3:
+    nb_files_max = int(sys.argv[3])
+    print(f"Maximum number of files to load set to {nb_files_max}")
+
+model_to_restore_path_str = ""
+if len(sys.argv) > 4:
+    model_to_restore_path_str = sys.argv[4]
+
+    if not os.path.exists(model_to_restore_path_str):
+        print(f"Model restore path {model_to_restore_path_str} does not exist")
+        sys.exit(0)
+    
+    print(f"Model will be restored from {model_to_restore_path_str}")
     
 # Read training data
 print(f"Reading dataset from {training_data_path_str}")
@@ -32,20 +46,25 @@ training_data_path = Path(training_data_path_str)
 file_names = training_data_path.rglob('*.mid.txt')
 file_paths = [join(training_data_path_str, f) for f in file_names]
 
-file_paths = file_paths[:100]
+file_paths = file_paths[:nb_files_max]
 
 nb_available_files = len(file_paths)
-print(f"Reading {nb_available_files} files")
 
 # Split data into training and validation dataset
 nb_training_files = math.floor(0.75*nb_available_files)
 file_paths_training = file_paths[:nb_training_files]
 file_paths_validation = file_paths[nb_training_files+1:]
 
-def read_data(file_paths):
+def read_data(file_paths, action_type):
+    f_used = open(f"{model_save_dir_path}/files_used_{action_type}.txt", "w")
+    
     data = []
+
     pbar = tqdm(file_paths)
     for fp in pbar:
+        
+        f_used.write(fp+'\n')
+
         try:
             with open(fp, "r") as file:
                 content = file.read()
@@ -56,72 +75,30 @@ def read_data(file_paths):
             print(f"Failed to load {fp}")
             print(e)
             continue
+        
+    f_used.close()
 
     return data
 
-# Parsing tokenized data and preparing model inputs
-print(f"Reading training data files")
-training_data = read_data(file_paths_training)
-f_used_training = open(f"{model_save_dir_name}/files_used_training.txt", "w")
-for fp in file_paths_training:
-    f_used_training.write(fp+'\n')
-f_used_training.close()
+print(f"Reading data files for training")
+training_data = read_data(file_paths_training, "training")
 
-# Instantiate and configure model
-model_name = "gpt2"  # Replace with a GPT-4 equivalent if accessible
-tokenizer = GPT2Tokenizer.from_pretrained(model_name)
-tokenizer.pad_token = tokenizer.eos_token
-model = GPT2LMHeadModel.from_pretrained(model_name)
+print(f"Building model")
+model = GPT2Model(model_save_dir_path, model_to_restore_path_str)
 
-training_inputs = ChordBassDataset(training_data, tokenizer)
+print(f"Training model on {len(file_paths_training)} files")
+model.train(training_data)
 
-print(f"Training on {len(file_paths_training)} files")
+print(f"Saving model to {model_save_dir_path}")
+model.save()
 
-# Traing model
-logging_dir="./logs"
-training_args = TrainingArguments(
-    output_dir=model_save_dir_name,
-    num_train_epochs=3,
-    per_device_train_batch_size=4,
-    logging_dir=logging_dir,
-    logging_steps=10,
-#     learning_rate=5e-5,
-#     weight_decay=0.01,
-#     evaluation_strategy="steps",
-#     eval_steps=10,
-#     per_device_eval_batch_size=4
-)
-
-trainer = Trainer(
-    model=model,
-    args=training_args,
-    train_dataset=training_inputs,
-    processing_class=tokenizer,
-)
-
-trainer.train()
-
-trainer.save_model(model_save_dir_name)
+print(f"Reading data files for validation")
+validation_data = read_data(file_paths_validation, "validation")
 
 # Validating
-print(f"Validating on {len(file_paths_validation)} files")
-validation_data = read_data(file_paths_validation)
-f_used_validation = open(f"{model_save_dir_name}/files_used_validation.txt", "w")
-for fp in file_paths_validation:
-    f_used_validation.write(fp+'\n')
-f_used_validation.close()
+print(f"Validating model on {len(file_paths_validation)} files")
+evaluation_results = model.validate(validation_data)
 
-validation_inputs = ChordBassDataset(validation_data, tokenizer)
-
-evaluator = Trainer(
-    model=model,
-    args=training_args,
-    train_dataset=training_inputs,
-    eval_dataset=validation_inputs,
-    processing_class=tokenizer,
-)
-
-evaluation_results = evaluator.evaluate()
 print(evaluation_results)
 
 # Print the data

@@ -32,7 +32,7 @@ Using the following MIDI datasets (downloaded to ./datasets)
 01_PrepareTrainingData.py
   Loading MIDI files using pretty_midi library (https://craffel.github.io/pretty-midi/)
   Extracting chords and bass lines from those files
-  Preparing (tokenizing) training data (chords-bass)
+  Preparing training data (chords-bass) in JSON format
 
   first argument: dataset path (folder or file)
   second argument: boolean if prepared data should be overriden ('y' or 'yes' accepted)
@@ -40,21 +40,29 @@ Using the following MIDI datasets (downloaded to ./datasets)
   Ex with one file: '''python .\01_PrepareTrainingData.py "E:\datasets\clean_midi\.38 Special\Fantasy Girl.mid" y'''
   Ex for all datasets: '''python .\01_PrepareTrainingData.py "E:\datasets\" y'''
 
-  Tokenized data is saved by MIDI file into a .txt file named as follows f"{initial_midi_filename_no_extension.mid}.txt"
+  Prepared data is saved by MIDI file into a .txt file named as follows f"{initial_midi_filename_no_extension.mid}.txt"
 
-Tokenized data files (*.mid.txt) moved from source folder to the project folder in order to control versions in GitHub
+  Ex: python .\01_PrepareTrainingData.py "E:\datasets\Monster-MIDI-Dataset-Ver-1-0-CC-BY-NC-SA\MIDIs\0\0001cd8c4da2f70f11b69e4afc8d9d49.mid" y
+
+Prepared data files (*.mid.txt) moved from source folder to the project folder in order to control versions in GitHub
   .\Copy_Prepared_Data.ps1 -sourceDir "E:\datasets" -targetDir "E:\tabularium\datasets_formatted"
 
 02_TrainingModel.py
-  Training a model (to choose) to create base lines in requested music style given input chords
+  Training a model to create base lines in requested music style given input chords
 
-  Reading tokenized data, supplying to the model, training the model, saving the model (how ?)
+  Reading data, supplying to the model, training the model, saving the model, validating the model
 
-BassLineTester.py
+  Ex from scratch: python .\02_TrainingModel.py "E:\tabularium\datasets_formatted\" "E:\tabularium\models_10" 10
+  Ex from given model: python .\02_TrainingModel.py "E:\tabularium\datasets_formatted\" "E:\tabularium\models_100" 100 "E:\tabularium\models_10"
+
+03_ModelTester.py
   Testing the trained model
-  Reads the MIDI file, plays, removes bass, plays, generates using pre-trained model, adds bass, plays
+  BassLineTester
+    Reads the MIDI file, plays, removes bass, plays, generates using pre-trained model, adds bass, plays
   
-  call test_line function passing the path to MIDI file
+    call test_line function passing the path to MIDI file
+
+  Ex: python .\03_ModelTester.py "E:\tabularium\models_10" "E:\tabularium\datasets_formatted\MIDI-Loops-Dataset-Small-CC-BY-NC-SA\MIDIs\(Dont Fear) The Reaper___Blue Oyster Cult___loop_3___Piano___32_beats.mid" y 3
 
   TDB: adapt to receive a mp3, convert to MIDI
 

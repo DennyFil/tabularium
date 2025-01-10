@@ -3,16 +3,14 @@ import torch
 from tqdm import tqdm
 from torch.utils.data import Dataset
 
-class ChordBassDataset(Dataset):
-    def __init__(self, data, tokenizer, max_length=128):
+class TorchChordBassDataset(Dataset):
+    def __init__(self, data, tokenizer, max_length):
         self.inputs = []
         self.targets = []
         self.tokenizer = tokenizer
 
         print("Preparing chord-bass dataset")
 
-        count = 1
-        total = len(data)
         pbar = tqdm(data)
         for item in pbar:
             

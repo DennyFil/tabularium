@@ -5,10 +5,7 @@ from os.path import join
 from tqdm import tqdm
 import pretty_midi
 from NoteExtractor import NoteExtractor
-from NoteToTabConverter import NoteToTabConverter
-from TabsDisplayer import TabsDisplayer
 from Tokenizer import Tokenizer
-from Tuning import Tuning
 from Exceptions import ChordException, BassException
 
 # Reading MIDI files from a given folder, extracting chords and bass lines, preparing and saving training data
@@ -58,28 +55,6 @@ nb_files_no_bass = 0
 f_no_bass = open(f"{dataset_path_str}_no_bass.txt", "w")
 
 note_extractor = NoteExtractor()
-
-# Define the guitar string tunings (standard tuning)
-guitar_tunings = [
-    Tuning(1, "E2", 40),
-    Tuning(2, "A2", 45),
-    Tuning(3, "D3", 50),
-    Tuning(4, "G3", 55),
-    Tuning(5, "B3", 59),
-    Tuning(6, "e4", 64)
-]
-
-bass_tunings = [
-    Tuning(1, "E1", 28),
-    Tuning(2, "A1", 33),
-    Tuning(3, "D2", 38),
-    Tuning(4, "G2", 43)
-]
-
-noteToTabConverter = NoteToTabConverter()
-measures_per_row = 4
-measure_duration = 2
-tabs_displayer = TabsDisplayer(measures_per_row, measure_duration)
 tokenizer = Tokenizer()
 
 pbar = tqdm(file_paths)
@@ -117,26 +92,6 @@ for fp in pbar:
         f.write(tokens)
         f.close()
 
-        # print("Bass")
-        # for bsn in bass_line:
-        #     print(bsn)
-
-        #guitar_tabs = noteToTabConverter.notes_to_tabs(chords, guitar_tunings) # a chord is a group of notes
-
-        #bass_tabs = noteToTabConverter.notes_to_tabs(bass_line, bass_tunings) # consider bass line as group of notes
-    
-        # tempo = 2  # Default tempo in seconds per beat (120 BPM)
-
-        # tempo_times, tempo_bpm = midi_data.get_tempo_changes()
-        # if len(tempo_bpm) > 0:
-        #     tempo = tempo_bpm[0]/60  # First tempo found
-
-        # # Get the total duration of the MIDI file in seconds
-        # duration = midi_data.get_end_time()
-
-        #tabs_displayer.display(f"Guitar tabs of {fn}", tempo, duration, guitar_tabs, guitar_tunings)
-        # tabs_displayer.display(f"Bass tabs of {fn}", tempo, duration, bass_tabs, bass_tunings)
-
         nb_files_loaded += 1
         f_loaded.write(fp+'\n')
     except ChordException as ve:
@@ -170,8 +125,3 @@ print(f"Number of files failed to load: {nb_files_failed_to_load}")
 
 def isNotBlank (myString):
     return bool(myString and myString.strip())
-
-# Labelling data
-
-# Storing data
-    

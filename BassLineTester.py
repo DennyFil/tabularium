@@ -4,7 +4,6 @@ import time
 import pretty_midi
 import pygame
 from Tools import is_bass, get_bass_notes_from_midi
-from BassLineGenerator import BassLineGenerator
 
 class BassLineTester:
 
@@ -12,7 +11,7 @@ class BassLineTester:
         self.play_music = play_music
         self.interval = interval
 
-    def test_line(self, model, tokenizer, input_file_path):
+    def test_line(self, model, input_file_path):
         midi_data = pretty_midi.PrettyMIDI(input_file_path)
         
         if self.play_music:
@@ -35,7 +34,7 @@ class BassLineTester:
             self.__play_file(file_no_bass_path)
             time.sleep(self.interval)
 
-        generated_bass_line_notes = BassLineGenerator().generate(model, tokenizer, midi_data)
+        generated_bass_line_notes = model.generate_output(midi_data)
         
         # add the generated line to file and play
         midi_data_bass_added = self.__add_bass_line(midi_data_without_bass, generated_bass_line_notes)
@@ -46,6 +45,8 @@ class BassLineTester:
         if self.play_music:
             print(f"playing input with generated bass")
             self.__play_file(file_bass_added_path)
+
+        return generated_bass_line_notes
 
     def __remove_bass(self, midi_data):
         
