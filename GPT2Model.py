@@ -15,6 +15,7 @@ class GPT2Model(ModelBase):
             num_train_epochs=3,
             per_device_train_batch_size=4,
             logging_steps=10,
+            save_steps=5000,
             #     learning_rate=5e-5,
             #     weight_decay=0.01,
             #     evaluation_strategy="steps",
@@ -69,5 +70,18 @@ class GPT2Model(ModelBase):
 
     def generate_output(self, inputs):
         tokenized_inputs = self.tokenizer(inputs, return_tensors="pt", max_length=self.tokenized_max_length, truncation=True, padding="max_length")
-        outputs = self.model.generate(tokenized_inputs["input_ids"], num_beams=5, early_stopping=True)
-        return self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+        outputs = self.model.generate(tokenized_inputs["input_ids"], max_length=2*self.tokenized_max_length, num_beams=5, early_stopping=True)
+        generated_text = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+
+        # Remove the input prefix from the generated text
+        # if generated_text.startswith(inputs):
+        #     generated_text = generated_text[len(inputs):].strip()
+
+        last_index = generated_text.rfind('},')
+
+        generated_text = generated_text[:last_index + 1] + ']'
+    
+        # print(generated_text)
+
+        return generated_text
+    

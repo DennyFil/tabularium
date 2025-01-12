@@ -44,6 +44,8 @@ Using the following MIDI datasets (downloaded to ./datasets)
 
   Ex: python .\01_PrepareTrainingData.py "E:\datasets\Monster-MIDI-Dataset-Ver-1-0-CC-BY-NC-SA\MIDIs\0\0001cd8c4da2f70f11b69e4afc8d9d49.mid" y
 
+  NB: bass notes from all bass programs are considered together
+
 Prepared data files (*.mid.txt) moved from source folder to the project folder in order to control versions in GitHub
   .\Copy_Prepared_Data.ps1 -sourceDir "E:\datasets" -targetDir "E:\tabularium\datasets_formatted"
 
@@ -61,6 +63,8 @@ Prepared data files (*.mid.txt) moved from source folder to the project folder i
     Reads the MIDI file, plays, removes bass, plays, generates using pre-trained model, adds bass, plays
   
     call test_line function passing the path to MIDI file
+
+    NB: bass line is add as 'Electric Bass (Finger)'
 
   Ex: python .\03_ModelTester.py "E:\tabularium\models_10" "E:\datasets\MIDI-Loops-Dataset-Small-CC-BY-NC-SA\MIDIs\(Dont Fear) The Reaper___Blue Oyster Cult___loop_3___Piano___32_beats.mid" y 3
 
