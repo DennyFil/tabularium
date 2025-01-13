@@ -81,4 +81,4 @@ measures_per_row = 4
 measure_duration = 2
 tabs_displayer = TabsDisplayer(measures_per_row, measure_duration)
 head, fn = os.path.split(file_path_str)
-# tabs_displayer.display(f"Bass tabs of {fn}", tempo, duration, bass_tabs, bass_tunings)
+tabs_displayer.display(f"Bass tabs of {fn}", tempo, duration, bass_tabs, bass_tunings)
