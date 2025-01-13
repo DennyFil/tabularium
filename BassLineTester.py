@@ -4,7 +4,6 @@ import json
 import time
 import pretty_midi
 import pygame
-from music21 import pitch
 from Note import Note
 from NoteExtractor import NoteExtractor
 from Tokenizer import Tokenizer
@@ -53,7 +52,9 @@ class BassLineTester:
         print(generated_bass_line_notes_str)
         generated_bass_line_notes = json.loads(generated_bass_line_notes_str)
 
-        generated_bass_line_notes = [pretty_midi.Note(0, pitch.Pitch(n['name'].replace("m", "-")).midi, float(n['start']), float(n['start'])) for n in generated_bass_line_notes]
+        default_velocity = 64
+        duration = 0.5
+        generated_bass_line_notes = [pretty_midi.Note(default_velocity, pretty_midi.note_name_to_number(n['name']), float(n['start']), float(n['start']) + duration) for n in generated_bass_line_notes]
         
         # add the generated line to file and play
         midi_data_bass_added = self.__add_bass_line(midi_data_without_bass, generated_bass_line_notes)
