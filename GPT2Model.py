@@ -74,8 +74,8 @@ class GPT2Model(ModelBase):
         generated_text = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
 
         # Remove the input prefix from the generated text
-        # if generated_text.startswith(inputs):
-        #     generated_text = generated_text[len(inputs):].strip()
+        if generated_text.startswith(inputs):
+            generated_text = generated_text[len(inputs):].strip()
 
         last_index = generated_text.rfind('},')
 

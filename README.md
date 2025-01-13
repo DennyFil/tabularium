@@ -29,7 +29,7 @@ Using the following MIDI datasets (downloaded to ./datasets)
 	https://huggingface.co/datasets/projectlosangeles/Monster-MIDI-Dataset
 	https://huggingface.co/datasets/asigalov61/MIDI-Loops
 
-01_PrepareTrainingData.py
+01_PrepareTrainingData.py (~100h all datasets)
   Loading MIDI files using pretty_midi library (https://craffel.github.io/pretty-midi/)
   Extracting chords and bass lines from those files
   Preparing training data (chords-bass) in JSON format
@@ -49,7 +49,7 @@ Using the following MIDI datasets (downloaded to ./datasets)
 Prepared data files (*.mid.txt) moved from source folder to the project folder in order to control versions in GitHub
   .\Copy_Prepared_Data.ps1 -sourceDir "E:\datasets" -targetDir "E:\tabularium\datasets_formatted"
 
-02_TrainingModel.py
+02_TrainingModel.py (~50h all datasets)
   Training a model to create base lines in requested music style given input chords
 
   Reading data, supplying to the model, training the model, saving the model, validating the model

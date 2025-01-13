@@ -54,6 +54,11 @@ class BassLineTester:
 
         default_velocity = 64
         duration = 0.5
+
+        for n in generated_bass_line_notes:
+            print(n['name'])
+            pretty_midi.note_name_to_number(n['name'])
+
         generated_bass_line_notes = [pretty_midi.Note(default_velocity, pretty_midi.note_name_to_number(n['name']), float(n['start']), float(n['start']) + duration) for n in generated_bass_line_notes]
         
         # add the generated line to file and play

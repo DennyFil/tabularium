@@ -1,11 +1,11 @@
 # Class used to manage a MIDI note which is a combination of start and a pitch
-from music21 import note
+import pretty_midi
 
 class Note:
     def __init__(self, start, pitch):
         self.pitch = pitch
         self.start = start
-        self.name = note.Note(self.pitch).name
+        self.name = pretty_midi.note_number_to_name(self.pitch)
         
     def __iter__(self):
         # Allow iteration over the notes in the chord
