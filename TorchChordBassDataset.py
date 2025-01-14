@@ -17,11 +17,8 @@ class TorchChordBassDataset(Dataset):
             # Parse the JSON string
             parsed_data = json.loads(item)
 
-            chord = parsed_data["CHORD"]
-            bass = parsed_data["BASS"]
-
-            chord_sequence = json.dumps(chord)
-            bass_sequence = json.dumps(bass)
+            chord_sequence = parsed_data["CHORD"]["value"]
+            bass_sequence = parsed_data["BASS"]["value"]
 
             # Tokenize inputs and targets
             input_encoded = tokenizer(chord_sequence, max_length=max_length, truncation=True, padding="max_length")

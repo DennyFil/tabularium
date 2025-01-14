@@ -2,6 +2,7 @@ import copy
 import os
 import json
 import time
+import re
 import pretty_midi
 import pygame
 from Note import Note
@@ -44,22 +45,29 @@ class BassLineTester:
         tokenizer = Tokenizer()
         tokens = tokenizer.get_tokens(None, chords, original_bass_line)
         parsed_data = json.loads(tokens)
-        chord_sequence = json.dumps(parsed_data["CHORD"])
+        chord_sequence = parsed_data["CHORD"]["value"]
 
-        generated_bass_line_notes_str = model.generate_output(chord_sequence)
+        print(chord_sequence)
+        generated_bass_line_notes_str = parsed_data["BASS"]["value"] #model.generate_output(chord_sequence)
 
         print("Generated bass line")
         print(generated_bass_line_notes_str)
-        generated_bass_line_notes = json.loads(generated_bass_line_notes_str)
+        # Regular expression to extract individual pairs
+        generated_bass_line_notes = re.findall(r"\['(.*?)',([\d\.]+)\]", generated_bass_line_notes_str)
+
+        # Convert to a list of lists with the number as float
+        generated_bass_line_notes = [[key, float(value)] for key, value in generated_bass_line_notes]
 
         default_velocity = 64
         duration = 0.5
 
+        print("Generated bass notes")
         for n in generated_bass_line_notes:
-            print(n['name'])
-            pretty_midi.note_name_to_number(n['name'])
+            print(n[0])
+            pretty_midi.note_name_to_number(n[0])
 
-        generated_bass_line_notes = [pretty_midi.Note(default_velocity, pretty_midi.note_name_to_number(n['name']), float(n['start']), float(n['start']) + duration) for n in generated_bass_line_notes]
+        # note is formated as an array ['name', start]
+        generated_bass_line_notes = [pretty_midi.Note(default_velocity, pretty_midi.note_name_to_number(n[0]), float(n[1]), float(n[1]) + duration) for n in generated_bass_line_notes]
         
         # add the generated line to file and play
         midi_data_bass_added = self.__add_bass_line(midi_data_without_bass, generated_bass_line_notes)
