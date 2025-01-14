@@ -1,1 +1,0 @@
-{"CHORD":[{"name":"A","start":"3.6"},{"name":"Am","start":"4.2"},{"name":"Am","start":"4.3"}],"BASS":[{"name":"C","start":"1.6"},{"name":"E-","start":"2.2"},{"name":"E-","start":"2.6"},{"name":"G","start":"2.8"},{"name":"D","start":"61.0"},{"name":"D","start":"61.4"},{"name":"G","start":"61.6"},{"name":"C","start":"61.8"},{"name":"D","start":"62.0"}]}

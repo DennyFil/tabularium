@@ -1,1 +1,0 @@
-{"CHORD":[{"name":"B-","start":"0.0"}],"BASS":[{"name":"B-","start":"0.0"},{"name":"E-","start":"4.0"},{"name":"C#","start":"4.75"},{"name":"C","start":"5.5"},{"name":"G#","start":"5.75"},{"name":"B-","start":"6.0"}]}

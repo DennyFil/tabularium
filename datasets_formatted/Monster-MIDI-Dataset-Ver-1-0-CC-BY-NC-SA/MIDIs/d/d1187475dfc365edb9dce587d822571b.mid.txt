@@ -1,1 +1,0 @@
-{"CHORD":[{"name":"C#","start":"616.9947916666666"},{"name":"C","start":"617.2447916666666"},{"name":"A","start":"617.4322916666666"}],"BASS":[{"name":"D","start":"81.25"},{"name":"F","start":"81.5"},{"name":"G","start":"82.0"},{"name":"D","start":"88.0"},{"name":"C","start":"96.0"},{"name":"D","start":"98.0"},{"name":"G","start":"100.0"}]}
