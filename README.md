@@ -1,75 +1,83 @@
-# tabularium
-Generate quality bass tabs of given music style based on song chords
+# Tabularium
 
-Install python version 3.12.8 (compatible with pytorch)
-  https://www.python.org/downloads/
-  
-You need to add the path of your pip installation to your PATH system variable
+Generate quality bass tabs of given music style based on given song chords
 
-Prerequisites to install
-    pip install pretty_midi
-    pip install music21
-    pip install plotly
-    pip install termplotlib
-		pip install plotext
-    pip install pygame
-    pip install tqdm
-    pip install setuptools
-      No module named 'pkg_resources'
-    pip install numpy
-    pip install transformers
-    pip install torch torchvision torchaudio
-    pip install transformers[torch]
+## Prerequisites to install
+Install python version 3.12.8 (compatible with pytorch) from https://www.python.org/downloads/
+Add the python path to your PATH system variable
 
-Using the following MIDI datasets (downloaded to ./datasets)
-  https://colinraffel.com/projects/lmd/
-		Clean MIDI subset
-		LMD-matched
-		
-	https://huggingface.co/datasets/projectlosangeles/Monster-MIDI-Dataset
-	https://huggingface.co/datasets/asigalov61/MIDI-Loops
+**TODO: check what is not needed**
+```
+pip install pretty_midi
+pip install music21
+pip install plotly
+pip install termplotlib
+pip install plotext
+pip install pygame
+pip install tqdm
+pip install setuptools (No module named 'pkg_resources')
+pip install numpy
+pip install transformers
+pip install torch torchvision torchaudio
+pip install transformers[torch]
+```
 
-01_PrepareTrainingData.py (~100h all datasets)
-  Loading MIDI files using pretty_midi library (https://craffel.github.io/pretty-midi/)
-  Extracting chords and bass lines from those files
-  Preparing training data (chords-bass) in JSON format
+## Datasets
+Downloaded MIDI the following MIDI datasets
+* Clean MIDI subset ( http://hog.ee.columbia.edu/craffel/lmd/clean_midi.tar.gz )
+* LMD-matched ( http://hog.ee.columbia.edu/craffel/lmd/lmd_matched.tar.gz )
+* https://huggingface.co/datasets/asigalov61/MIDI-Loops
 
-  first argument: dataset path (folder or file)
-  second argument: boolean if prepared data should be overriden ('y' or 'yes' accepted)
+## Prepare training data (~24h for all datasets)
+* Script 01_PrepareTrainingData.py
+  * Arguments
+    * first argument: dataset path (folder or file)
+    * second argument: boolean if prepared data should be overriden ('y' or 'yes' accepted)
+  * Loading MIDI files using pretty_midi library (https://craffel.github.io/pretty-midi/)
+  * Extracting chords and bass lines from those files (NoteExtractor)
+  * Preparing training data (chords-bass pairs) in JSON format
 
-  Ex with one file: '''python .\01_PrepareTrainingData.py "E:\datasets\clean_midi\.38 Special\Fantasy Girl.mid" y'''
-  Ex for all datasets: '''python .\01_PrepareTrainingData.py "E:\datasets\" y'''
+  Ex with one file: ```python .\01_PrepareTrainingData.py "E:\datasets\clean_midi\.38 Special\Fantasy Girl.mid" y```
 
-  Prepared data is saved by MIDI file into a .txt file named as follows f"{initial_midi_filename_no_extension.mid}.txt"
+  Ex for all datasets: ```python .\01_PrepareTrainingData.py "E:\datasets\" y```
 
-  Ex: python .\01_PrepareTrainingData.py "E:\datasets\Monster-MIDI-Dataset-Ver-1-0-CC-BY-NC-SA\MIDIs\0\0001cd8c4da2f70f11b69e4afc8d9d49.mid" y
+  For every MIDI file prepared data is saved into a .txt file named as follows f"{initial_midi_filename_no_extension.mid}.txt"
 
   NB: bass notes from all bass programs are considered together
 
-Prepared data files (*.mid.txt) moved from source folder to the project folder in order to control versions in GitHub
-  .\Copy_Prepared_Data.ps1 -sourceDir "E:\datasets" -targetDir "E:\tabularium\datasets_formatted"
+  Prepared data files (*.mid.txt) were moved from dataset source folder into the GitHub folder in order to version-control
+  * ```.\Copy_Prepared_Data.ps1 -sourceDir "E:\datasets" -targetDir "E:\tabularium\datasets_formatted"```
 
-02_TrainingModel.py (~50h all datasets)
-  Training a model to create base lines in requested music style given input chords
-
-  Reading data, supplying to the model, training the model, saving the model, validating the model
+## Training model (~ h for all datasets)
+* Script 02_TrainingModel.py
+  * Arguments
+    * first argument: prepared dataset path (folder)
+    * second argument: path to save the model
+    * third argument: number of files to consider for training
+    * forth argument: path to model if restoring
+  * Reading data, supplying to the model, training the model, saving the model, validating the model
 
   Ex from scratch: python .\02_TrainingModel.py "E:\tabularium\datasets_formatted\" "E:\tabularium\models_10" 10
+  
   Ex from given model: python .\02_TrainingModel.py "E:\tabularium\datasets_formatted\" "E:\tabularium\models_100" 100 "E:\tabularium\models_10"
 
-03_ModelTester.py
-  Testing the trained model
-  BassLineTester
-    Reads the MIDI file, plays, removes bass, plays, generates using pre-trained model, adds bass, plays
+## Testing model
+* Script 03_ModelTester.py
+  * Testing the trained model
+  * Arguments
+    * first argument: path to model (folder, model class will read itself the file needed)
+    * second argument: path to MIDI file to be tested
+    * third argument: boolean if should be played during testing ('y' or 'yes' accepted)
+    * forth argument: interval in seconds to use between playing different variations of submitted file
+  * Use BassLineTester
+    * read the MIDI file and play it
+    * remove bass and play it again
+    * generate the new bass line using the pre-trained model
+    * add this bass line and play
+  * Use TabsDisplayer to display the generated bass tabs in console
   
-    call test_line function passing the path to MIDI file
-
-    NB: bass line is add as 'Electric Bass (Finger)'
+  NB: bass line is added as 'Electric Bass (Finger)'
 
   Ex: python .\03_ModelTester.py "E:\tabularium\models_10" "E:\datasets\MIDI-Loops-Dataset-Small-CC-BY-NC-SA\MIDIs\(Dont Fear) The Reaper___Blue Oyster Cult___loop_3___Piano___32_beats.mid" y 3
 
   TDB: adapt to receive a mp3, convert to MIDI
-
-
-Display results in tab form
-  TabsDisplayer
