@@ -45,6 +45,8 @@ Downloaded MIDI the following MIDI datasets
 
   NB: bass notes from all bass programs are considered together
 
+  Some *.mid.txt files removed due to very long path
+
   Prepared data files (*.mid.txt) were moved from dataset source folder into the GitHub folder in order to version-control
   * ```.\Copy_Prepared_Data.ps1 -sourceDir "E:\datasets" -targetDir "E:\tabularium\datasets_formatted"```
 
