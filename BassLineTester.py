@@ -48,27 +48,33 @@ class BassLineTester:
         chord_sequence = parsed_data["CHORD"]["value"]
 
         print(chord_sequence)
-        generated_bass_line_notes_str = parsed_data["BASS"]["value"] #model.generate_output(chord_sequence)
+        generated_bass_line_notes_str = model.generate_output(chord_sequence) # parsed_data["BASS"]["value"]
 
         print("Generated bass line")
         print(generated_bass_line_notes_str)
-        # Regular expression to extract individual pairs
-        generated_bass_line_notes = re.findall(r"\['(.*?)',([\d\.]+)\]", generated_bass_line_notes_str)
-
-        # Convert to a list of lists with the number as float
-        generated_bass_line_notes = [[key, float(value)] for key, value in generated_bass_line_notes]
+        # Convert the generated string to a list of notes
+        # generated: "['D#2',36.190439999999995],['D#2',36.66663],['D#2',37.14281999999999],['D#2',37.380914999999995]"
+        generated_bass_line_notes_split = [[key, float(value)] for key, value in re.findall(r"\['(.*?)',([\d\.]+)\]", generated_bass_line_notes_str)]
 
         default_velocity = 64
-        duration = 0.5
 
-        print("Generated bass notes")
-        for n in generated_bass_line_notes:
-            print(n[0])
-            pretty_midi.note_name_to_number(n[0])
+        # convert bass notes to pretty_midi.Note, let the note sound until the next one starts
+        generated_bass_line_notes = []
+        for idx in range(len(generated_bass_line_notes_split)-1):
+            # current note
+            note = generated_bass_line_notes_split[idx]
+            # note is formated as an array ['name', start]
+            # start
+            start = float(note[1])
+            next_note = generated_bass_line_notes_split[idx+1]
+            # end current note at the same time the next note starts
+            end = float(next_note[1])
 
-        # note is formated as an array ['name', start]
-        generated_bass_line_notes = [pretty_midi.Note(default_velocity, pretty_midi.note_name_to_number(n[0]), float(n[1]), float(n[1]) + duration) for n in generated_bass_line_notes]
-        
+            generated_bass_line_notes.append(pretty_midi.Note(default_velocity, pretty_midi.note_name_to_number(note[0]), start, end))
+
+        # add the last note with short duration
+        generated_bass_line_notes.append(pretty_midi.Note(default_velocity, pretty_midi.note_name_to_number(next_note[0]), end, end + 1))
+
         # add the generated line to file and play
         midi_data_bass_added = self.__add_bass_line(midi_data_without_bass, generated_bass_line_notes)
 

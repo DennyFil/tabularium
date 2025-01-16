@@ -1,14 +1,15 @@
 from ModelBase import ModelBase
 
-from transformers import GPT2LMHeadModel, GPT2Tokenizer, Trainer, TrainingArguments
-from TorchChordBassDataset import TorchChordBassDataset
+import torch
+from transformers import pipeline, LlamaForCausalLM, AutoTokenizer, Trainer, TrainingArguments, AutoConfig
+from ChordBassDatasetTokenizer import ChordBassDatasetTokenizer
 
-class GPT2Model(ModelBase):
+class Llama321BModel(ModelBase):
     def __init__(self, model_save_dir_path, model_restore_dir_path):
-        self.model_name = "gpt2"  # Replace with a GPT-4 equivalent if accessible
+
+        self.model_name = "meta-llama/Llama-3.2-1B"
 
         super().__init__(model_save_dir_path, model_restore_dir_path)
-        self.tokenized_max_length = 128
 
         self.training_args = TrainingArguments(
             output_dir=self.model_save_dir_path,
@@ -22,26 +23,37 @@ class GPT2Model(ModelBase):
             #     eval_steps=10,
             #     per_device_eval_batch_size=4
         )
-
-        self.tokenizer = GPT2Tokenizer.from_pretrained(self.model_name)
-        self.tokenizer.pad_token = self.tokenizer.eos_token
-
+        
     def load_model(self):
         # Load the pre-trained model
-        self.model = GPT2LMHeadModel.from_pretrained(self.model_restore_dir_path)
-        print(f"Model loaded from {self.model_restore_dir_path}")
-        
+        self.model = LlamaForCausalLM.from_pretrained(self.model_restore_dir_path)
         # Load the tokenizer
-        self.tokenizer = GPT2Tokenizer.from_pretrained(self.model_restore_dir_path)
+        self.tokenizer = AutoTokenizer.from_pretrained(self.model_restore_dir_path)
         self.tokenizer.pad_token = self.tokenizer.eos_token
+
+        print(f"Model loaded from {self.model_restore_dir_path}")
 
     def build_model(self):
         # Instantiate and configure model
-        self.model = GPT2LMHeadModel.from_pretrained(self.model_name)
+        pipe = pipeline(
+            "text-generation", 
+            model=self.model_name, 
+            torch_dtype=torch.bfloat16, 
+            device_map="auto"
+        )
+
+        pipe("The key to life is")
+
+        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
+        self.model = LlamaForCausalLM.from_pretrained(self.model_name)
+        self.tokenizer.pad_token = self.tokenizer.eos_token
+    
+        config = AutoConfig.from_pretrained(self.model_name)
+        print(f"Maximum tokens (context window size): {config.max_position_embeddings}")
         
     def train(self, training_data):
 
-        self.training_inputs = TorchChordBassDataset(training_data, self.tokenizer, self.tokenized_max_length)
+        self.training_inputs = ChordBassDatasetTokenizer(training_data, self.tokenizer)
 
         self.trainer = Trainer(
             model=self.model,
@@ -56,7 +68,7 @@ class GPT2Model(ModelBase):
         self.trainer.save_model(self.model_save_dir_path)
 
     def validate(self, validation_data):
-        validation_inputs = TorchChordBassDataset(validation_data, self.tokenizer, self.tokenized_max_length)
+        validation_inputs = ChordBassDatasetTokenizer(validation_data, self.tokenizer)
 
         evaluator = Trainer(
             model=self.model,
@@ -69,9 +81,12 @@ class GPT2Model(ModelBase):
         return evaluator.evaluate()
 
     def generate_output(self, inputs):
-        tokenized_inputs = self.tokenizer(inputs, return_tensors="pt", max_length=self.tokenized_max_length, truncation=True, padding="max_length")
-        outputs = self.model.generate(tokenized_inputs["input_ids"], max_length=2*self.tokenized_max_length, num_beams=5, early_stopping=True)
-        generated_text = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+        tokenized_inputs = self.tokenizer.tokenize(inputs)
+        outputs = self.model.generate(tokenized_inputs["input_ids"])
+        generated_text = self.tokenizer.decode(outputs[0])
+
+        print(inputs)
+        print(generated_text)
 
         # Remove the input prefix from the generated text
         if generated_text.startswith(inputs):
@@ -81,7 +96,7 @@ class GPT2Model(ModelBase):
 
         generated_text = generated_text[:last_index + 1] + ']'
     
-        # print(generated_text)
+        
 
         return generated_text
     

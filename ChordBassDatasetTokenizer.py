@@ -1,10 +1,9 @@
 import json
 import torch
 from tqdm import tqdm
-from torch.utils.data import Dataset
 
-class TorchChordBassDataset(Dataset):
-    def __init__(self, data, tokenizer, max_length):
+class ChordBassDatasetTokenizer():
+    def __init__(self, data, tokenizer):
         self.inputs = []
         self.targets = []
         self.tokenizer = tokenizer
@@ -21,8 +20,8 @@ class TorchChordBassDataset(Dataset):
             bass_sequence = parsed_data["BASS"]["value"]
 
             # Tokenize inputs and targets
-            input_encoded = tokenizer(chord_sequence, max_length=max_length, truncation=True, padding="max_length")
-            target_encoded = tokenizer(bass_sequence, max_length=max_length, truncation=True, padding="max_length")
+            input_encoded = tokenizer.tokenize(chord_sequence)
+            target_encoded = tokenizer.tokenize(bass_sequence)
 
             self.inputs.append(input_encoded)
             self.targets.append(target_encoded)

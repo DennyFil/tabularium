@@ -4,7 +4,7 @@ import math
 from pathlib import Path
 from os.path import join
 from tqdm import tqdm
-from GPT2Model import GPT2Model
+from Llama321BModel import Llama321BModel
 
 if len(sys.argv) <= 1:
     print('Please submit path to prepared data directory as first argument')
@@ -84,7 +84,7 @@ print(f"Reading data files for training")
 training_data = read_data(file_paths_training, "training")
 
 print(f"Building model")
-model = GPT2Model(model_save_dir_path, model_to_restore_path_str)
+model = Llama321BModel(model_save_dir_path, model_to_restore_path_str)
 
 print(f"Training model on {len(file_paths_training)} files")
 model.train(training_data)

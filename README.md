@@ -20,6 +20,10 @@ pip install numpy
 pip install transformers
 pip install torch torchvision torchaudio
 pip install transformers[torch]
+pip install sentencepiece
+pip install protobuf
+Create an account on HuggingFace.co, add access token, add token to environment variable
+Visit https://huggingface.co/meta-llama/Llama-3.2-1B to ask for access.
 ```
 
 ## Datasets
@@ -58,6 +62,8 @@ Downloaded MIDI the following MIDI datasets
     * third argument: number of files to consider for training
     * forth argument: path to model if restoring
   * Reading data, supplying to the model, training the model, saving the model, validating the model
+
+  Login to HuggingFace before launching the training ```huggingface-cli login --token $HF_TOKEN --add-to-git-credential```
 
   Ex from scratch: python .\02_TrainingModel.py "E:\tabularium\datasets_formatted\" "E:\tabularium\models_10" 10
   

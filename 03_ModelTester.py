@@ -5,7 +5,7 @@ from BassLineTester import BassLineTester
 from Tuning import Tuning
 from NoteToTabConverter import NoteToTabConverter
 from TabsDisplayer import TabsDisplayer
-from GPT2Model import GPT2Model
+from Llama321BModel import Llama321BModel
 
 if len(sys.argv) <= 1:
     print('Please submit a model directory path as first argument')
@@ -34,7 +34,7 @@ play_music = play_music == 'y' or play_music == 'yes'
 bt = BassLineTester(play_music, interval)
 
 print(f"Loading model")
-model = GPT2Model(None, model_path_str)
+model = Llama321BModel(None, model_path_str)
 
 print(f"Generating bass line for {file_path_str}")
 generated_bass_line_notes = bt.test_line(model, file_path_str)
