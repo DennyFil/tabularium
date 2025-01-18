@@ -5,10 +5,10 @@ from transformers import pipeline, AutoModelForCausalLM, AutoTokenizer, Trainer,
 from ChordBassDatasetTokenizer import ChordBassDatasetTokenizer
 
 class TansformerModel(ModelBase):
-    def __init__(self, model_name, max_model_nb_tokens, model_save_dir_path, model_restore_dir_path):
+    def __init__(self, model_config, model_save_dir_path, model_restore_dir_path):
 
-        self.model_name = model_name
-        self.max_length = max_model_nb_tokens
+        self.model_name = model_config["name"]
+        self.max_length = model_config["max_nb_tokens"]
 
         super().__init__(model_save_dir_path, model_restore_dir_path)
 
