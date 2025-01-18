@@ -5,7 +5,8 @@ class ChordBassDatasetTokenizer():
     def __init__(self, data, tokenizer, max_length):
         self.tokenized = []
 
-        print("Preparing chord-bass dataset")
+        action_str = "Preparing tokenized chord-bass dataset"
+        print(f"START {action_str}")
 
         pbar = tqdm(data)
         for item in pbar:
@@ -27,6 +28,8 @@ class ChordBassDatasetTokenizer():
             )
 
             self.tokenized.append(tokenized)
+
+        print(f"END {action_str}")
 
     def __len__(self):
         return len(self.tokenized)

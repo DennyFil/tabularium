@@ -1,7 +1,7 @@
 from ModelBase import ModelBase
 
 import torch
-from transformers import pipeline, AutoModelForCausalLM, AutoTokenizer, Trainer, TrainingArguments, AutoConfig
+from transformers import pipeline, AutoModelForCausalLM, AutoTokenizer, Trainer, TrainingArguments
 from ChordBassDatasetTokenizer import ChordBassDatasetTokenizer
 
 class TansformerModel(ModelBase):
@@ -35,27 +35,16 @@ class TansformerModel(ModelBase):
         print(f"Model loaded from {self.model_restore_dir_path}")
 
     def build_model(self):
-        # Instantiate and configure model
-        pipe = pipeline(
-            "text-generation", 
-            model=self.model_name, 
-            torch_dtype=torch.bfloat16, 
-            device_map="auto"
-        )
-
-        pipe("The key to life is")
-
+        # Instantiate model
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
         self.model = AutoModelForCausalLM.from_pretrained(self.model_name)
         self.tokenizer.pad_token = self.tokenizer.eos_token
-    
-        config = AutoConfig.from_pretrained(self.model_name)
-        print(f"Maximum tokens (context window size): {config.max_position_embeddings}")
         
     def train(self, training_data):
 
         self.training_inputs = ChordBassDatasetTokenizer(training_data, self.tokenizer, self.max_length)
 
+        print("Building model trainer")
         self.trainer = Trainer(
             model=self.model,
             args=self.training_args,
@@ -63,7 +52,9 @@ class TansformerModel(ModelBase):
             processing_class=self.tokenizer,
         )
 
+        print("Launch train using trainer")
         self.trainer.train()
+        print("Trainer terminated")
 
     def save(self):
         self.trainer.save_model(self.model_save_dir_path)

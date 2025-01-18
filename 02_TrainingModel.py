@@ -1,6 +1,7 @@
 import sys
 import os
 import math
+import time
 from pathlib import Path
 from os.path import join
 from tqdm import tqdm
@@ -41,6 +42,8 @@ if len(sys.argv) > 4:
     
     print(f"Model will be restored from {model_to_restore_path_str}")
     
+print("START training")
+
 # Read training data
 print(f"Reading dataset from {training_data_path_str}")
 training_data_path = Path(training_data_path_str)
@@ -84,12 +87,18 @@ def read_data(file_paths, action_type):
 print(f"Reading data files for training")
 training_data = read_data(file_paths_training, "training")
 
-print(f"Building model")
+print(f"START Building model")
+model_build_start = time.time()
 model_config = build_model_config("llama")
 model = TansformerModel(model_config, model_save_dir_path, model_to_restore_path_str)
+model_build_end = time.time()
+print(f"END Building model in {model_build_end - model_build_start} seconds")
 
-print(f"Training model on {len(file_paths_training)} files")
+print(f"START Training model on {len(file_paths_training)} files")
+model_training_start = time.time()
 model.train(training_data)
+model_training_end = time.time()
+print(f"END Training model in {model_training_end - model_training_start} seconds")
 
 print(f"Saving model to {model_save_dir_path}")
 model.save()
@@ -102,6 +111,8 @@ print(f"Validating model on {len(file_paths_validation)} files")
 evaluation_results = model.validate(validation_data)
 
 print(evaluation_results)
+
+print("END training")
 
 # Print the data
 
