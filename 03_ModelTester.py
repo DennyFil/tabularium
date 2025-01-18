@@ -35,8 +35,8 @@ play_music = play_music == 'y' or play_music == 'yes'
 bt = BassLineTester(play_music, interval)
 
 print(f"Loading model")
-model_config = build_model_config("llama")
-model = TansformerModel(model_config, model_path_str)
+model_config = build_model_config("qwen")
+model = TansformerModel(model_config, None, model_path_str)
 
 print(f"Generating bass line for {file_path_str}")
 generated_bass_line_notes = bt.test_line(model, file_path_str)

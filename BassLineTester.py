@@ -47,7 +47,6 @@ class BassLineTester:
         parsed_data = json.loads(tokens)
         chord_sequence = parsed_data["CHORD"]["value"]
 
-        print(chord_sequence)
         generated_bass_line_notes_str = model.generate_output(chord_sequence) # parsed_data["BASS"]["value"]
 
         print("Generated bass line")

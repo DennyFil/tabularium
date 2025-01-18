@@ -73,11 +73,17 @@ class TansformerModel(ModelBase):
         return evaluator.evaluate()
 
     def generate_output(self, inputs):
-        tokenized_inputs = self.tokenizer(inputs)
+        
+        tokenized_inputs = self.tokenizer(
+                inputs, return_tensors="pt",
+                truncation=True,
+                padding="max_length",
+                max_length=self.max_length
+            )
+        
         outputs = self.model.generate(tokenized_inputs["input_ids"])
         generated_text = self.tokenizer.decode(outputs[0])
-
-        print(inputs)
+        
         print(generated_text)
 
         # Remove the input prefix from the generated text
@@ -88,7 +94,7 @@ class TansformerModel(ModelBase):
 
         generated_text = generated_text[:last_index + 1] + ']'
     
-        
+        print(generated_text)
 
         return generated_text
     
