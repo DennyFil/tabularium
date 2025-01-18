@@ -1,20 +1,21 @@
 from ModelBase import ModelBase
 
 import torch
-from transformers import pipeline, LlamaForCausalLM, AutoTokenizer, Trainer, TrainingArguments, AutoConfig
+from transformers import pipeline, AutoModelForCausalLM, AutoTokenizer, Trainer, TrainingArguments, AutoConfig
 from ChordBassDatasetTokenizer import ChordBassDatasetTokenizer
 
-class Llama321BModel(ModelBase):
-    def __init__(self, model_save_dir_path, model_restore_dir_path):
+class TansformerModel(ModelBase):
+    def __init__(self, model_name, max_model_nb_tokens, model_save_dir_path, model_restore_dir_path):
 
-        self.model_name = "meta-llama/Llama-3.2-1B"
+        self.model_name = model_name
+        self.max_length = max_model_nb_tokens
 
         super().__init__(model_save_dir_path, model_restore_dir_path)
 
         self.training_args = TrainingArguments(
             output_dir=self.model_save_dir_path,
             num_train_epochs=3,
-            per_device_train_batch_size=4,
+            per_device_train_batch_size=2,
             logging_steps=10,
             save_steps=5000,
             #     learning_rate=5e-5,
@@ -26,7 +27,7 @@ class Llama321BModel(ModelBase):
         
     def load_model(self):
         # Load the pre-trained model
-        self.model = LlamaForCausalLM.from_pretrained(self.model_restore_dir_path)
+        self.model = AutoModelForCausalLM.from_pretrained(self.model_restore_dir_path)
         # Load the tokenizer
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_restore_dir_path)
         self.tokenizer.pad_token = self.tokenizer.eos_token
@@ -45,7 +46,7 @@ class Llama321BModel(ModelBase):
         pipe("The key to life is")
 
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
-        self.model = LlamaForCausalLM.from_pretrained(self.model_name)
+        self.model = AutoModelForCausalLM.from_pretrained(self.model_name)
         self.tokenizer.pad_token = self.tokenizer.eos_token
     
         config = AutoConfig.from_pretrained(self.model_name)
@@ -53,7 +54,7 @@ class Llama321BModel(ModelBase):
         
     def train(self, training_data):
 
-        self.training_inputs = ChordBassDatasetTokenizer(training_data, self.tokenizer)
+        self.training_inputs = ChordBassDatasetTokenizer(training_data, self.tokenizer, self.max_length)
 
         self.trainer = Trainer(
             model=self.model,
@@ -68,7 +69,7 @@ class Llama321BModel(ModelBase):
         self.trainer.save_model(self.model_save_dir_path)
 
     def validate(self, validation_data):
-        validation_inputs = ChordBassDatasetTokenizer(validation_data, self.tokenizer)
+        validation_inputs = ChordBassDatasetTokenizer(validation_data, self.tokenizer, self.max_length)
 
         evaluator = Trainer(
             model=self.model,
@@ -81,7 +82,7 @@ class Llama321BModel(ModelBase):
         return evaluator.evaluate()
 
     def generate_output(self, inputs):
-        tokenized_inputs = self.tokenizer.tokenize(inputs)
+        tokenized_inputs = self.tokenizer(inputs)
         outputs = self.model.generate(tokenized_inputs["input_ids"])
         generated_text = self.tokenizer.decode(outputs[0])
 

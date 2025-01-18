@@ -4,7 +4,8 @@ import math
 from pathlib import Path
 from os.path import join
 from tqdm import tqdm
-from Llama321BModel import Llama321BModel
+from TansformerModel import TansformerModel
+from ModelConfigFactory import build_model_config
 
 if len(sys.argv) <= 1:
     print('Please submit path to prepared data directory as first argument')
@@ -84,7 +85,8 @@ print(f"Reading data files for training")
 training_data = read_data(file_paths_training, "training")
 
 print(f"Building model")
-model = Llama321BModel(model_save_dir_path, model_to_restore_path_str)
+model_config = build_model_config("llama")
+model = TansformerModel(model_config.name, model_config.max_nb_tokens, model_save_dir_path, model_to_restore_path_str)
 
 print(f"Training model on {len(file_paths_training)} files")
 model.train(training_data)

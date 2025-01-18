@@ -5,7 +5,8 @@ from BassLineTester import BassLineTester
 from Tuning import Tuning
 from NoteToTabConverter import NoteToTabConverter
 from TabsDisplayer import TabsDisplayer
-from Llama321BModel import Llama321BModel
+from TansformerModel import TansformerModel
+from ModelConfigFactory import build_model_config
 
 if len(sys.argv) <= 1:
     print('Please submit a model directory path as first argument')
@@ -34,7 +35,8 @@ play_music = play_music == 'y' or play_music == 'yes'
 bt = BassLineTester(play_music, interval)
 
 print(f"Loading model")
-model = Llama321BModel(None, model_path_str)
+model_config = build_model_config("llama")
+model = TansformerModel(model_config.name, model_config.max_nb_tokens, model_path_str)
 
 print(f"Generating bass line for {file_path_str}")
 generated_bass_line_notes = bt.test_line(model, file_path_str)

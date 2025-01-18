@@ -1,12 +1,9 @@
 import json
-import torch
 from tqdm import tqdm
 
 class ChordBassDatasetTokenizer():
-    def __init__(self, data, tokenizer):
-        self.inputs = []
-        self.targets = []
-        self.tokenizer = tokenizer
+    def __init__(self, data, tokenizer, max_length):
+        self.tokenized = []
 
         print("Preparing chord-bass dataset")
 
@@ -19,19 +16,21 @@ class ChordBassDatasetTokenizer():
             chord_sequence = parsed_data["CHORD"]["value"]
             bass_sequence = parsed_data["BASS"]["value"]
 
-            # Tokenize inputs and targets
-            input_encoded = tokenizer.tokenize(chord_sequence)
-            target_encoded = tokenizer.tokenize(bass_sequence)
+            # Tokenize inputs and outputs with truncation and padding
+            tokenized = tokenizer(
+                chord_sequence,
+                text_target=bass_sequence,
+                truncation=True,       # Ensures inputs/outputs are truncated to the model's max length
+                # padding="longest"
+                padding="max_length",  # Pads all sequences to the model's max length
+                max_length=max_length
+            )
 
-            self.inputs.append(input_encoded)
-            self.targets.append(target_encoded)
+            self.tokenized.append(tokenized)
 
     def __len__(self):
-        return len(self.inputs)
+        return len(self.tokenized)
 
     def __getitem__(self, idx):
-        input_ids = torch.tensor(self.inputs[idx]["input_ids"])
-        attention_mask = torch.tensor(self.inputs[idx]["attention_mask"])
-        target_ids = torch.tensor(self.targets[idx]["input_ids"])
-        return {"input_ids": input_ids, "attention_mask": attention_mask, "labels": target_ids}
-    
+        return self.tokenized[idx]
+        
