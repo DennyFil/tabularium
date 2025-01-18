@@ -57,7 +57,7 @@ nb_available_files = len(file_paths)
 # Split data into training and validation dataset
 nb_training_files = math.floor(0.75*nb_available_files)
 file_paths_training = file_paths[:nb_training_files]
-file_paths_validation = file_paths[nb_training_files+1:]
+file_paths_validation = file_paths[nb_training_files:]
 
 def read_data(file_paths, action_type):
     f_used = open(f"{model_save_dir_path}/files_used_{action_type}.txt", "w")
@@ -89,7 +89,7 @@ training_data = read_data(file_paths_training, "training")
 
 print(f"START Building model")
 model_build_start = time.time()
-model_config = build_model_config("llama")
+model_config = build_model_config("qwen")
 model = TansformerModel(model_config, model_save_dir_path, model_to_restore_path_str)
 model_build_end = time.time()
 print(f"END Building model in {model_build_end - model_build_start} seconds")
