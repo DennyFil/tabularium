@@ -7,7 +7,7 @@ from ChordBassDatasetTokenizer import ChordBassDatasetTokenizer
 class TransformerModel(ModelBase):
     def __init__(self, model_config, model_save_dir_path, model_restore_dir_path):
 
-		self.device_map = 'cuda'
+        self.device_map = 'cuda'
         self.model_name = model_config["name"]
         self.max_length = model_config["max_nb_tokens"]
 
