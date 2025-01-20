@@ -9,25 +9,30 @@ from TansformerModel import TansformerModel
 from ModelConfigFactory import build_model_config
 
 if len(sys.argv) <= 1:
-    print('Please submit a model directory path as first argument')
+    print('Please submit model name as first argument')
     sys.exit(0)
 
 if len(sys.argv) <= 2:
-    print('Please submit a MIDI file path as second argument')
+    print('Please submit a model directory path as second argument')
     sys.exit(0)
 
 if len(sys.argv) <= 3:
-    print('Please submit as third argument if music should be played during testing')
+    print('Please submit a MIDI file path as third argument')
     sys.exit(0)
 
 if len(sys.argv) <= 4:
-    print('Please submit as fourth argument the interval (seconds) between played music pieces')
+    print('Please submit as fourth argument if music should be played during testing')
     sys.exit(0)
 
-model_path_str = sys.argv[1]
-file_path_str = sys.argv[2]
-play_music = sys.argv[3]
-interval = sys.argv[4]
+if len(sys.argv) <= 5:
+    print('Please submit as fifth argument the interval (seconds) between played music pieces')
+    sys.exit(0)
+
+model_name = sys.argv[1]
+model_path_str = sys.argv[2]
+file_path_str = sys.argv[3]
+play_music = sys.argv[4]
+interval = sys.argv[5]
 interval = int(interval) if interval.isdecimal() else 3
 
 play_music = play_music == 'y' or play_music == 'yes'
@@ -35,7 +40,7 @@ play_music = play_music == 'y' or play_music == 'yes'
 bt = BassLineTester(play_music, interval)
 
 print(f"Loading model")
-model_config = build_model_config("qwen")
+model_config = build_model_config(model_name)
 model = TansformerModel(model_config, None, model_path_str)
 
 print(f"Generating bass line for {file_path_str}")

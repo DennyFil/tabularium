@@ -9,32 +9,37 @@ from TansformerModel import TansformerModel
 from ModelConfigFactory import build_model_config
 
 if len(sys.argv) <= 1:
-    print('Please submit path to prepared data directory as first argument')
+    print('Please submit model name as first argument')
     sys.exit(0)
 
 if len(sys.argv) <= 2:
-    print('Please submit path for checkpoint and model saving directory as second argument')
+    print('Please submit path to prepared data directory as second argument')
     sys.exit(0)
 
-training_data_path_str = sys.argv[1]
+if len(sys.argv) <= 3:
+    print('Please submit path for checkpoint and model saving directory as third argument')
+    sys.exit(0)
+
+model_name = sys.argv[1]
+training_data_path_str = sys.argv[2]
 
 if not os.path.exists(training_data_path_str):
     print(f"Training data path {training_data_path_str} does not exist")
     sys.exit(0)
 
-model_save_dir_path = sys.argv[2]
+model_save_dir_path = sys.argv[3]
 
 if not os.path.exists(model_save_dir_path):
     print(f"Model saving path {model_save_dir_path} does not exist")
     sys.exit(0)
 
-if len(sys.argv) > 3:
-    nb_files_max = int(sys.argv[3])
+if len(sys.argv) > 4:
+    nb_files_max = int(sys.argv[4])
     print(f"Maximum number of files to load set to {nb_files_max}")
 
 model_to_restore_path_str = ""
-if len(sys.argv) > 4:
-    model_to_restore_path_str = sys.argv[4]
+if len(sys.argv) > 5:
+    model_to_restore_path_str = sys.argv[5]
 
     if not os.path.exists(model_to_restore_path_str):
         print(f"Model restore path {model_to_restore_path_str} does not exist")
@@ -89,7 +94,7 @@ training_data = read_data(file_paths_training, "training")
 
 print(f"START Building model")
 model_build_start = time.time()
-model_config = build_model_config("qwen")
+model_config = build_model_config(model_name)
 model = TansformerModel(model_config, model_save_dir_path, model_to_restore_path_str)
 model_build_end = time.time()
 print(f"END Building model in {model_build_end - model_build_start} seconds")
