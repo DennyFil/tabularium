@@ -5,7 +5,7 @@ from BassLineTester import BassLineTester
 from Tuning import Tuning
 from NoteToTabConverter import NoteToTabConverter
 from TabsDisplayer import TabsDisplayer
-from TansformerModel import TansformerModel
+from TransformerModel import TransformerModel
 from ModelConfigFactory import build_model_config
 
 if len(sys.argv) <= 1:
@@ -41,7 +41,7 @@ bt = BassLineTester(play_music, interval)
 
 print(f"Loading model")
 model_config = build_model_config(model_name)
-model = TansformerModel(model_config, None, model_path_str)
+model = TransformerModel(model_config, None, model_path_str)
 
 print(f"Generating bass line for {file_path_str}")
 generated_bass_line_notes = bt.test_line(model, file_path_str)

@@ -5,7 +5,7 @@ import time
 from pathlib import Path
 from os.path import join
 from tqdm import tqdm
-from TansformerModel import TansformerModel
+from TransformerModel import TransformerModel
 from ModelConfigFactory import build_model_config
 
 if len(sys.argv) <= 1:
@@ -95,7 +95,7 @@ training_data = read_data(file_paths_training, "training")
 print(f"START Building model")
 model_build_start = time.time()
 model_config = build_model_config(model_name)
-model = TansformerModel(model_config, model_save_dir_path, model_to_restore_path_str)
+model = TransformerModel(model_config, model_save_dir_path, model_to_restore_path_str)
 model_build_end = time.time()
 print(f"END Building model in {model_build_end - model_build_start} seconds")
 

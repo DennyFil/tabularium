@@ -22,6 +22,7 @@ pip install torch torchvision torchaudio
 pip install transformers[torch]
 pip install sentencepiece
 pip install protobuf
+pip install accelerate
 Create an account on HuggingFace.co, add access token, add token to environment variable
 Visit https://huggingface.co/meta-llama/Llama-3.2-1B to ask for access.
 ```
@@ -59,26 +60,28 @@ Downloaded MIDI the following MIDI datasets
 ## Training model (~ h for all datasets)
 * Script 02_TrainingModel.py
   * Arguments
-    * first argument: prepared dataset path (folder)
-    * second argument: path to save the model
-    * third argument: number of files to consider for training
-    * forth argument: path to model if restoring
+    * first argument: name of the model to train
+    * second argument: prepared dataset path (folder)
+    * third argument: path to save the model
+    * forth argument: number of files to consider for training
+    * fifth argument: path to model if restoring
   * Reading data, supplying to the model, training the model, saving the model, validating the model
 
   Login to HuggingFace before launching the training ```huggingface-cli login --token $HF_TOKEN --add-to-git-credential```
 
-  Ex from scratch: python .\02_TrainingModel.py "E:\tabularium\datasets_formatted\" "E:\tabularium\models_10" 10
+  Ex from scratch: python .\02_TrainingModel.py qwen "E:\tabularium\datasets_formatted\" "E:\tabularium\models_10" 10
   
-  Ex from given model: python .\02_TrainingModel.py "E:\tabularium\datasets_formatted\" "E:\tabularium\models_100" 100 "E:\tabularium\models_10"
+  Ex from given model: python .\02_TrainingModel.py qwen "E:\tabularium\datasets_formatted\" "E:\tabularium\models_100" 100 "E:\tabularium\models_10"
 
 ## Testing model
 * Script 03_ModelTester.py
   * Testing the trained model
   * Arguments
-    * first argument: path to model (folder, model class will read itself the file needed)
-    * second argument: path to MIDI file to be tested
-    * third argument: boolean if should be played during testing ('y' or 'yes' accepted)
-    * forth argument: interval in seconds to use between playing different variations of submitted file
+    * first argument: name of the model to test
+    * second argument: path to model (folder, model class will read itself the file needed)
+    * third argument: path to MIDI file to be tested
+    * forth argument: boolean if should be played during testing ('y' or 'yes' accepted)
+    * fifth argument: interval in seconds to use between playing different variations of submitted file
   * Use BassLineTester
     * read the MIDI file and play it
     * remove bass and play it again

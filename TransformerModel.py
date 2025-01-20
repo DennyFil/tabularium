@@ -4,9 +4,10 @@ import torch
 from transformers import pipeline, AutoModelForCausalLM, AutoTokenizer, Trainer, TrainingArguments
 from ChordBassDatasetTokenizer import ChordBassDatasetTokenizer
 
-class TansformerModel(ModelBase):
+class TransformerModel(ModelBase):
     def __init__(self, model_config, model_save_dir_path, model_restore_dir_path):
 
+		self.device_map = 'cuda'
         self.model_name = model_config["name"]
         self.max_length = model_config["max_nb_tokens"]
 
@@ -27,7 +28,7 @@ class TansformerModel(ModelBase):
         
     def load_model(self):
         # Load the pre-trained model
-        self.model = AutoModelForCausalLM.from_pretrained(self.model_restore_dir_path)
+        self.model = AutoModelForCausalLM.from_pretrained(self.model_restore_dir_path, device_map = self.device_map)
         # Load the tokenizer
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_restore_dir_path)
         self.tokenizer.pad_token = self.tokenizer.eos_token
@@ -37,7 +38,7 @@ class TansformerModel(ModelBase):
     def build_model(self):
         # Instantiate model
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
-        self.model = AutoModelForCausalLM.from_pretrained(self.model_name)
+        self.model = AutoModelForCausalLM.from_pretrained(self.model_name, device_map = self.device_map)
         self.tokenizer.pad_token = self.tokenizer.eos_token
         
     def train(self, training_data):
