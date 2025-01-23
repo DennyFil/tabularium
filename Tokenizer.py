@@ -10,6 +10,10 @@ class Tokenizer:
         if len(chords) == 0 or len(bass_notes) == 0:
             raise ValueError("Missing notes, cannot generate tokens")
 
+        # limit input to 30 seconds
+        chords = filter(lambda c: c.start <= 30, chords)
+        bass_notes = filter(lambda b: b.start <= 30, bass_notes)
+
         tokens = "{"
         if style:
             tokens += f"\"STYLE:\"{style}\","

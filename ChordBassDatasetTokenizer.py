@@ -16,11 +16,13 @@ class ChordBassDatasetTokenizer():
 
             chord_sequence = parsed_data["CHORD"]["value"]
             bass_sequence = parsed_data["BASS"]["value"]
+            input_sequence = chord_sequence + '/////' + bass_sequence
 
             # Tokenize inputs and outputs with truncation and padding
             tokenized = tokenizer(
-                chord_sequence,
-                text_target=bass_sequence,
+                input_sequence,
+                # chord_sequence,
+                # text_target=bass_sequence,
                 truncation=True,       # Ensures inputs/outputs are truncated to the model's max length
                 # padding="longest"
                 padding="max_length",  # Pads all sequences to the model's max length
