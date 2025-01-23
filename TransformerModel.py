@@ -1,7 +1,6 @@
 from ModelBase import ModelBase
 
-import torch
-from transformers import pipeline, AutoModelForCausalLM, AutoTokenizer, Trainer, TrainingArguments
+from transformers import AutoModelForCausalLM, AutoTokenizer, Trainer, TrainingArguments
 from ChordBassDatasetTokenizer import ChordBassDatasetTokenizer
 
 class TransformerModel(ModelBase):

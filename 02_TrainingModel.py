@@ -118,9 +118,3 @@ evaluation_results = model.validate(validation_data)
 print(evaluation_results)
 
 print("END training")
-
-# Print the data
-
-# Plot errors
-
-# Save model for future use
