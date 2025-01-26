@@ -21,6 +21,7 @@ if len(sys.argv) <= 3:
     sys.exit(0)
 
 model_name = sys.argv[1]
+model_config = build_model_config(model_name)
 training_data_path_str = sys.argv[2]
 
 if not os.path.exists(training_data_path_str):
@@ -94,7 +95,6 @@ training_data = read_data(file_paths_training, "training")
 
 print(f"START Building model")
 model_build_start = time.time()
-model_config = build_model_config(model_name)
 model = TransformerModel(model_config, model_save_dir_path, model_to_restore_path_str)
 model_build_end = time.time()
 print(f"END Building model in {model_build_end - model_build_start} seconds")

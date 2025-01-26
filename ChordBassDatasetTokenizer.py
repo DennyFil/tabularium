@@ -28,6 +28,15 @@ class ChordBassDatasetTokenizer():
                 padding="max_length",  # Pads all sequences to the model's max length
                 max_length=max_length
             )
+            
+            # Clone input_ids for labels (causal LM requires this)
+            tokenized["labels"] = tokenized["input_ids"][:]
+            # Replace padding tokens in labels with -100
+            if tokenizer.pad_token_id is not None:
+                tokenized["labels"] = [
+                    token if token != tokenizer.pad_token_id else -100
+                    for token in tokenized["labels"]
+                ]
 
             self.tokenized.append(tokenized)
 
