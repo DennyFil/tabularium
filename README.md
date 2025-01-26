@@ -53,6 +53,10 @@ Downloaded MIDI the following MIDI datasets
   Some *.mid.txt files removed due to very long path
     - clean_midi/Alpentrio Tirol/Alpentrio Hitmix_ Alpentrio-Medley   Hast a bisserl Zeit fur mi   Tepperter Bua   Hallo kleine Traumfrau   Vergiss die Liebe nicht   Ich freu' mich schon auf dich   Ich hab was ganz lieb's traumt von dir   Geheimnis der Johannesnacht   Engel v. Ma.mid.txt
     - clean_midi/Rush/Cygnus X-1, Book II_ Hemispheres_ I. Prelude   II. Apollo_ Bringer of Wisdom   III. Dionysus_ Bringer of Love   IV. Armageddon_ The Battle of Heart and Mind   V. Cygnus_ Bringer of Balance   VI. The Sphere_ A Kind of Dream.mid.txt
+    - MIDI-Loops-Dataset-Small-CC-BY-NC-SA/MIDIs/Cygnus X-1, Book II_ Hemispheres_ I. Prelude   II. Apollo_ Bringer of Wisdom   III. Dionysus_ Bringer of Love   IV. Armageddon_ ___Rush___loop_0___Piano___32_beats.mid.txt': Filename too long
+    - MIDI-Loops-Dataset-Small-CC-BY-NC-SA/MIDIs/Cygnus X-1, Book II_ Hemispheres_ I. Prelude   II. Apollo_ Bringer of Wisdom   III. Dionysus_ Bringer of Love   IV. Armageddon_ ___Rush___loop_1___Drums___32_beats.mid.txt': Filename too long
+    - MIDI-Loops-Dataset-Small-CC-BY-NC-SA/MIDIs/Cygnus X-1, Book II_ Hemispheres_ I. Prelude   II. Apollo_ Bringer of Wisdom   III. Dionysus_ Bringer of Love   IV. Armageddon_ ___Rush___loop_2___Piano___32_beats.mid.txt': Filename too long
+    - MIDI-Loops-Dataset-Small-CC-BY-NC-SA/MIDIs/Cygnus X-1, Book II_ Hemispheres_ I. Prelude   II. Apollo_ Bringer of Wisdom   III. Dionysus_ Bringer of Love   IV. Armageddon_ ___Rush___loop_3___Piano___32_beats.mid.txt': Filename too long
 
   Prepared data files (*.mid.txt) were moved from dataset source folder into the GitHub folder in order to version-control
   * ```.\Copy_Prepared_Data.ps1 -sourceDir "E:\datasets" -targetDir "E:\tabularium\datasets_formatted"```
