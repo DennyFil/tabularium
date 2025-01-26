@@ -61,7 +61,7 @@ Downloaded MIDI the following MIDI datasets
   Prepared data files (*.mid.txt) were moved from dataset source folder into the GitHub folder in order to version-control
   * ```.\Copy_Prepared_Data.ps1 -sourceDir "E:\datasets" -targetDir "E:\tabularium\datasets_formatted"```
 
-  **NB: datasets are version controled, NO need to launch 01_PrepareTrainingData.py multiple times**
+  **NB: datasets are version controled, NO need to launch 01_PrepareTrainingData.py multiple times, launch training on files of datasets_formatted folder**
 
 ## Training model (~ h for all datasets)
 * Script 02_TrainingModel.py
