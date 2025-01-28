@@ -27,7 +27,7 @@ class TransformerModel(ModelBase):
         
     def load_model(self):
         # Load the pre-trained model
-        self.model = AutoModelForCausalLM.from_pretrained(self.model_restore_dir_path, device_map = self.device_map)
+        self.model = AutoModelForCausalLM.from_pretrained(self.model_restore_dir_path)
         # Load the tokenizer
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_restore_dir_path)
         self.tokenizer.pad_token = self.tokenizer.eos_token
