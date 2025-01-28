@@ -61,7 +61,7 @@ Downloaded MIDI the following MIDI datasets
   Prepared data files (*.mid.txt) were moved from dataset source folder into the GitHub folder in order to version-control
   * ```.\Copy_Prepared_Data.ps1 -sourceDir "E:\datasets" -targetDir "E:\tabularium\datasets_formatted"```
 
-  **NB: datasets are version controled, NO need to launch 01_PrepareTrainingData.py multiple times, launch training on files of datasets_formatted folder**
+  **NB: datasets are version controlled, NO need to launch 01_PrepareTrainingData.py multiple times, launch training on files of datasets_formatted folder**
 
 ## Training model (~ h for all datasets)
 * Script 02_TrainingModel.py
@@ -98,5 +98,4 @@ Downloaded MIDI the following MIDI datasets
   NB: bass line is added as 'Electric Bass (Finger)'
 
   Ex: python .\03_ModelTester.py "E:\tabularium\models_10" "E:\datasets\MIDI-Loops-Dataset-Small-CC-BY-NC-SA\MIDIs\(Dont Fear) The Reaper___Blue Oyster Cult___loop_3___Piano___32_beats.mid" y 3
-
-  TDB: adapt to receive a mp3, convert to MIDI
+  
