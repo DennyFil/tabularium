@@ -68,7 +68,7 @@ Downloaded MIDI the following MIDI datasets
 
   **NB: datasets are version controlled, NO need to launch 01_PrepareTrainingData.py multiple times, launch training on files of datasets_formatted folder**
 
-## Training model (~ h for all datasets)
+## Training model
 * Script 02_TrainingModel.py
   * Arguments
     * first argument: name of the model to train
@@ -76,14 +76,27 @@ Downloaded MIDI the following MIDI datasets
     * third argument: path to save the model
     * forth argument: number of files to consider for training
     * fifth argument: path to model if restoring
-  * Reading data, supplying to the model, training the model, saving the model, validating the model
+  * Reading data, supplying to the model, training the model, saving the model
 
   Login to HuggingFace before launching the training ```huggingface-cli login --token $HF_TOKEN --add-to-git-credential```
 
-  Ex from scratch: python .\02_TrainingModel.py qwen "E:\tabularium\datasets_formatted\" "E:\tabularium\models_10" 10
+  Ex from scratch: python .\02_TrainingModel.py qwen "E:\tabularium\datasets_formatted\for_training" "E:\tabularium\models_10" 10
   
-  Ex from given model: python .\02_TrainingModel.py qwen "E:\tabularium\datasets_formatted\" "E:\tabularium\models_100" 100 "E:\tabularium\models_10"
+  Ex from given model: python .\02_TrainingModel.py qwen "E:\tabularium\datasets_formatted\for_training" "E:\tabularium\models_100" 100 "E:\tabularium\models_10"
 
+## Validating model
+* Script 02b_ValidatingModel.py
+  * Arguments
+    * first argument: name of the model to train
+    * second argument: prepared dataset path (folder)
+    * third argument: path to trained model
+    * forth argument: number of files to consider for validation
+  * Reading data, restoring model, validating model
+
+  Login to HuggingFace before launching the validation ```huggingface-cli login --token $HF_TOKEN --add-to-git-credential```
+
+  Ex from scratch: python .\02b_ValidatingModel.py qwen "E:\tabularium\datasets_formatted\for_validation" "E:\tabularium\models_10" 10
+  
 ## Testing model
 * Script 03_ModelTester.py
   * Testing the trained model
@@ -102,5 +115,5 @@ Downloaded MIDI the following MIDI datasets
   
   NB: bass line is added as 'Electric Bass (Finger)'
 
-  Ex: python .\03_ModelTester.py "E:\tabularium\models_10" "E:\datasets\MIDI-Loops-Dataset-Small-CC-BY-NC-SA\MIDIs\(Dont Fear) The Reaper___Blue Oyster Cult___loop_3___Piano___32_beats.mid" y 3
+  Ex: python .\03_ModelTester.py qwen "E:\tabularium\models_10" "E:\datasets\MIDI-Loops-Dataset-Small-CC-BY-NC-SA\MIDIs\(Dont Fear) The Reaper___Blue Oyster Cult___loop_3___Piano___32_beats.mid" y 3
   

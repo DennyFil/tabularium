@@ -59,13 +59,16 @@ class TransformerModel(ModelBase):
     def save(self):
         self.trainer.save_model(self.model_save_dir_path)
 
-    def validate(self, validation_data):
+    def validate(self, validation_data, training_data):
+        training_inputs = ChordBassDatasetTokenizer(training_data, self.tokenizer, self.max_length)
         validation_inputs = ChordBassDatasetTokenizer(validation_data, self.tokenizer, self.max_length)
 
+        self.training_args.output_dir = self.model_restore_dir_path + "/validation_results"
+        
         evaluator = Trainer(
             model=self.model,
             args=self.training_args,
-            train_dataset=self.training_inputs,
+            train_dataset=training_inputs,
             eval_dataset=validation_inputs,
             processing_class=self.tokenizer,
         )
