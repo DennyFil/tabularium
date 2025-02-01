@@ -1,6 +1,5 @@
 import sys
 import os
-import math
 import time
 from pathlib import Path
 from os.path import join
@@ -13,7 +12,7 @@ if len(sys.argv) <= 1:
     sys.exit(0)
 
 if len(sys.argv) <= 2:
-    print('Please submit path to prepared data directory as second argument')
+    print('Please submit path to prepared dataset directory as second argument')
     sys.exit(0)
 
 if len(sys.argv) <= 3:
@@ -25,7 +24,7 @@ model_config = build_model_config(model_name)
 training_data_path_str = sys.argv[2]
 
 if not os.path.exists(training_data_path_str):
-    print(f"Training data path {training_data_path_str} does not exist")
+    print(f"Training dataset path {training_data_path_str} does not exist")
     sys.exit(0)
 
 model_save_dir_path = sys.argv[3]
@@ -56,14 +55,8 @@ training_data_path = Path(training_data_path_str)
 file_names = training_data_path.rglob('*.mid.txt')
 file_paths = [join(training_data_path_str, f) for f in file_names]
 
-file_paths = file_paths[:nb_files_max]
-
-nb_available_files = len(file_paths)
-
-# Split data into training and validation dataset
-nb_training_files = math.floor(0.75*nb_available_files)
-file_paths_training = file_paths[:nb_training_files]
-file_paths_validation = file_paths[nb_training_files:]
+if nb_files_max > 0:
+    file_paths = file_paths[:nb_files_max]
 
 def read_data(file_paths, action_type):
     f_used = open(f"{model_save_dir_path}/files_used_{action_type}.txt", "w")
@@ -91,7 +84,7 @@ def read_data(file_paths, action_type):
     return data
 
 print(f"Reading data files for training")
-training_data = read_data(file_paths_training, "training")
+training_data = read_data(file_paths, "training")
 
 print(f"START Building model")
 model_build_start = time.time()
@@ -99,7 +92,7 @@ model = TransformerModel(model_config, model_save_dir_path, model_to_restore_pat
 model_build_end = time.time()
 print(f"END Building model in {model_build_end - model_build_start} seconds")
 
-print(f"START Training model on {len(file_paths_training)} files")
+print(f"START Training model on {len(file_paths)} files")
 model_training_start = time.time()
 model.train(training_data)
 model_training_end = time.time()
@@ -107,14 +100,5 @@ print(f"END Training model in {model_training_end - model_training_start} second
 
 print(f"Saving model to {model_save_dir_path}")
 model.save()
-
-print(f"Reading data files for validation")
-validation_data = read_data(file_paths_validation, "validation")
-
-# Validating
-print(f"Validating model on {len(file_paths_validation)} files")
-evaluation_results = model.validate(validation_data)
-
-print(evaluation_results)
 
 print("END training")
