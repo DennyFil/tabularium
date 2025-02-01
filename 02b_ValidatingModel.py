@@ -86,8 +86,6 @@ with open(training_files_stats_path_str, 'r') as file:
 
 print(f"Reading training data files for validation")
 training_data = read_data(training_file_paths, "training_for_validation")
-print(training_file_paths)
-
 
 print(f"START Building model")
 model_build_start = time.time()
