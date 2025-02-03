@@ -1,6 +1,8 @@
 bass_note_threshold = 60 # Assuming bass notes are below Middle C (C4 = 60)
 bass_instrument_name = "Bass"
 
+chord_bass_split = "/////"
+
 bass_midi_program_ids = [
     33, # Acoustic Bass
     34, # Electric Bass (finger)

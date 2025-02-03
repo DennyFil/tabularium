@@ -1,4 +1,5 @@
 from ModelBase import ModelBase
+from Constants import chord_bass_split
 
 from transformers import AutoModelForCausalLM, AutoTokenizer, Trainer, TrainingArguments
 from ChordBassDatasetTokenizer import ChordBassDatasetTokenizer
@@ -87,14 +88,12 @@ class TransformerModel(ModelBase):
         generated_text = self.tokenizer.decode(outputs[0])
         
         print(generated_text)
+        
+        split_idx_1 = generated_text.find(chord_bass_split)
 
-        # Remove the input prefix from the generated text
-        if generated_text.startswith(inputs):
-            generated_text = generated_text[len(inputs):].strip()
+        split_idx_2 = generated_text.find(chord_bass_split, split_idx_1 + len(chord_bass_split))
 
-        last_index = generated_text.rfind('},')
-
-        generated_text = generated_text[:last_index + 1] + ']'
+        generated_text = generated_text[split_idx_1 + len(chord_bass_split):split_idx_2]
     
         print(generated_text)
 

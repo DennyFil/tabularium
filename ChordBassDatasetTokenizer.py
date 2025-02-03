@@ -1,5 +1,6 @@
 import json
 from tqdm import tqdm
+from Constants import chord_bass_split
 
 class ChordBassDatasetTokenizer():
     def __init__(self, data, tokenizer, max_length):
@@ -16,7 +17,7 @@ class ChordBassDatasetTokenizer():
 
             chord_sequence = parsed_data["CHORD"]["value"]
             bass_sequence = parsed_data["BASS"]["value"]
-            input_sequence = chord_sequence + '/////' + bass_sequence
+            input_sequence = chord_sequence + chord_bass_split + bass_sequence
 
             # Tokenize inputs and outputs with truncation and padding
             tokenized = tokenizer(

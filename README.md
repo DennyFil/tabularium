@@ -115,5 +115,4 @@ Downloaded MIDI the following MIDI datasets
   
   NB: bass line is added as 'Electric Bass (Finger)'
 
-  Ex: python .\03_ModelTester.py qwen "E:\tabularium\models_10" "E:\datasets\MIDI-Loops-Dataset-Small-CC-BY-NC-SA\MIDIs\(Dont Fear) The Reaper___Blue Oyster Cult___loop_3___Piano___32_beats.mid" y 3
-  
+  Ex: python .\03_ModelTester.py qwen "C:\Users\Denny\DEV\AI\tabularium\tabularium\trained_model" "C:\Users\Denny\DEV\AI\MIDI-Loops-Dataset-Small-CC-BY-NC-SA\MIDIs\(You Drive Me) Crazy.3___Britney Spears___loop_0___Piano___32_beats.mid" y 3
