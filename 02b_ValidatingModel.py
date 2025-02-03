@@ -32,15 +32,11 @@ if not os.path.exists(model_path_str):
     print(f"Trained model path {model_path_str} does not exist")
     sys.exit(0)
 
-training_files_stats_file_name = 'files_used_training.txt'
-training_files_stats_path_str = model_path_str + '/' + training_files_stats_file_name
-if not os.path.exists(training_files_stats_path_str):
-    print(f"Trained model folder should contain {training_files_stats_file_name}")
-    sys.exit(0)
-
 if len(sys.argv) > 3:
     nb_files_max = int(sys.argv[4])
     print(f"Maximum number of files to load set to {nb_files_max}")
+
+print("START validation")
     
 print(f"Reading dataset from {validation_data_path_str}")
 validation_data_path = Path(validation_data_path_str)
@@ -77,16 +73,6 @@ def read_data(file_paths, action_type):
 print(f"Reading data files for validation")
 validation_data = read_data(file_paths, "validation")
 
-print(f"Reading training dataset from {training_files_stats_path_str}")
-training_file_paths = []
-with open(training_files_stats_path_str, 'r') as file:
-    # Read each line in the file
-    for line in file:
-        training_file_paths.append(line.strip())
-
-print(f"Reading training data files for validation")
-training_data = read_data(training_file_paths, "training_for_validation")
-
 print(f"START Building model")
 model_build_start = time.time()
 model = TransformerModel(model_config, None, model_path_str)
@@ -95,8 +81,8 @@ print(f"END Building model in {model_build_end - model_build_start} seconds")
 
 # Validating
 print(f"Validating model on {len(file_paths)} files")
-evaluation_results = model.validate(validation_data, training_data)
+evaluation_results = model.validate(validation_data)
 
 print(evaluation_results)
 
-print("END training")
+print("END validation")
