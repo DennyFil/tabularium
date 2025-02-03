@@ -20,15 +20,16 @@ class BassLineTester:
         midi_data = pretty_midi.PrettyMIDI(input_file_path)
         
         if self.play_music:
-            print(f"playing input")
+            print(f"Playing input")
             self.__play_file(input_file_path)
             time.sleep(self.interval)
 
-        print(f"bass notes nb before generation: {len(get_bass_notes_from_midi(midi_data))}")
+        print(f"Bass notes nb before generation: {len(get_bass_notes_from_midi(midi_data))}")
 
         note_extractor = NoteExtractor()
         chords, original_bass_line = note_extractor.extract_chords_and_bass(midi_data)
         
+        print("Removing bass line and saving file")
         midi_data_without_bass = self.__remove_bass(midi_data)
 
         output_file_name_prefix, file_extension = os.path.splitext(input_file_path)
@@ -38,7 +39,7 @@ class BassLineTester:
         midi_data_without_bass.write(file_no_bass_path)
 
         if self.play_music:
-            print(f"playing input without bass")
+            print(f"Playing input without bass")
             self.__play_file(file_no_bass_path)
             time.sleep(self.interval)
 
@@ -75,13 +76,14 @@ class BassLineTester:
         generated_bass_line_notes.append(pretty_midi.Note(default_velocity, pretty_midi.note_name_to_number(next_note[0]), end, end + 1))
 
         # add the generated line to file and play
+        print("Adding generated bass line and saving file")
         midi_data_bass_added = self.__add_bass_line(midi_data_without_bass, generated_bass_line_notes)
 
         file_bass_added_path = f"{output_file_name_prefix}_bass_added{file_extension}"
         midi_data_bass_added.write(file_bass_added_path)
 
         if self.play_music:
-            print(f"playing input with generated bass")
+            print(f"Playing input with generated bass")
             self.__play_file(file_bass_added_path)
 
         return[Note(n.start, n.pitch) for n in generated_bass_line_notes]

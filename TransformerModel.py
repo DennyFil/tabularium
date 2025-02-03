@@ -84,7 +84,7 @@ class TransformerModel(ModelBase):
                 max_length=self.max_length
             )
         
-        outputs = self.model.generate(tokenized_inputs["input_ids"])
+        outputs = self.model.generate(tokenized_inputs["input_ids"], attention_mask=tokenized_inputs["attention_mask"])
         generated_text = self.tokenizer.decode(outputs[0])
         
         print(generated_text)
