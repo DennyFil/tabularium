@@ -16,7 +16,7 @@ def build_model_config(model_name):
 	if model_name == "qwen":
 		return {
 			"name": "Qwen/Qwen1.5-0.5B",
-			"max_nb_tokens": 2800 #32768
+			"max_nb_tokens": 2000
         }
 	
 	raise Exception("Unsupported model")
