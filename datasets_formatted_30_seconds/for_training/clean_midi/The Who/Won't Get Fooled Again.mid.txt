@@ -1,1 +1,0 @@
-{"CHORD":{"value":"['A',0.0]"},"BASS":{"value":""}}
