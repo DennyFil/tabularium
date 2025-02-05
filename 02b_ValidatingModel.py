@@ -31,17 +31,19 @@ model_path_str = sys.argv[3]
 if not os.path.exists(model_path_str):
     print(f"Trained model path {model_path_str} does not exist")
     sys.exit(0)
-
-if len(sys.argv) > 3:
-    nb_files_max = int(sys.argv[4])
-    print(f"Maximum number of files to load set to {nb_files_max}")
-
-print("START validation")
     
 print(f"Reading dataset from {validation_data_path_str}")
 validation_data_path = Path(validation_data_path_str)
 file_names = validation_data_path.rglob('*.mid.txt')
 file_paths = [join(validation_data_path_str, f) for f in file_names]
+
+nb_files_max = len(file_paths)
+
+if len(sys.argv) > 4:
+    nb_files_max = int(sys.argv[4])
+    print(f"Maximum number of files to load set to {nb_files_max}")
+
+print("START validation")
 
 file_paths = file_paths[:nb_files_max]
 
