@@ -95,7 +95,7 @@ Downloaded MIDI the following MIDI datasets
 
   Login to HuggingFace before launching the validation ```huggingface-cli login --token $HF_TOKEN --add-to-git-credential```
 
-  Ex from scratch: python .\02b_ValidatingModel.py qwen "E:\tabularium\datasets_formatted\for_validation" "E:\tabularium\models_10" 10
+  Ex: python .\02b_ValidatingModel.py qwen "E:\tabularium\datasets_formatted\for_validation" "E:\tabularium\models_10" 10
   
 ## Testing model
 * Script 03_ModelTester.py
