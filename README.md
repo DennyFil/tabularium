@@ -115,5 +115,5 @@ Downloaded MIDI the following MIDI datasets
   
   NB: bass line is added as 'Electric Bass (Finger)'
 
-  Ex: python .\03_ModelTester.py qwen "C:\Users\Denny\DEV\AI\tabularium\tabularium\trained_model" "C:\Users\Denny\DEV\AI\MIDI-Loops-Dataset-Small-CC-BY-NC-SA\MIDIs\(Dont Fear) The Reaper___Blue Oyster Cult___loop_3___Piano___32_beats.mid" y 3
+  Ex: python .\03_ModelTester.py qwen "E:\tabularium\trained_model" "E:\MIDI-Loops-Dataset-Small-CC-BY-NC-SA\MIDIs\(Dont Fear) The Reaper___Blue Oyster Cult___loop_3___Piano___32_beats.mid" y 3
   
